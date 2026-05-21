@@ -17,7 +17,7 @@ interface KimdbRepository {
 
     fun getTitlesByTypeAndLength(titleType: TitleType, length: Int): List<Title>
 
-    fun getTitles(): Sequence<Title>
+    fun getTitles(): List<Title>
 
-    fun getNames(): Sequence<Name>
+    fun getNames(): List<Name>
 }
