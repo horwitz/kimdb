@@ -33,3 +33,10 @@ internal fun <T> mapTsvRows(
     forEachTsvRow(path, expectedColumns) { out += rowMapper(it) }
     return out
 }
+
+internal fun String.toCsvTokensOrEmpty(): List<String> =
+    if (this == NULL_TOKEN) {
+        emptyList()
+    } else {
+        split(',').filter(String::isNotBlank)
+    }

@@ -57,10 +57,5 @@ object ImdbTsvParser {
 
     private fun String.toTconstSetOrEmpty() = toCsvSetOrEmpty(TConst::of)
 
-    private fun <T> String.toCsvSetOrEmpty(f: (String) -> T) =
-        if (this == NULL_TOKEN) {
-            emptySet()
-        } else {
-            split(',').asSequence().filter(String::isNotBlank).map(f).toSet()
-        }
+    private fun <T> String.toCsvSetOrEmpty(f: (String) -> T) = toCsvTokensOrEmpty().asSequence().map(f).toSet()
 }
