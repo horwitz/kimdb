@@ -20,8 +20,7 @@ class InMemoryKimdbRepository(
     private val nameById = namesList.associateBy { it.nconst }
     private val titlesByTypeAndLength = titlesList.groupBy { it.titleType to it.primaryTitle.length }
 
-    override fun getTitlesByPrimaryTitle(movieTitleAsString: String) =
-        titlesByPrimaryTitle[movieTitleAsString].orEmpty()
+    override fun getTitlesByPrimaryTitle(movieTitleAsString: String) = titlesByPrimaryTitle[movieTitleAsString].orEmpty()
 
     override fun getNamesByPrimaryName(nameAsString: String) = namesByPrimaryName[nameAsString].orEmpty()
 
@@ -29,8 +28,10 @@ class InMemoryKimdbRepository(
 
     override fun getName(id: NConst) = nameById[id]
 
-    override fun getTitlesByTypeAndLength(titleType: TitleType, length: Int) =
-        titlesByTypeAndLength[titleType to length].orEmpty()
+    override fun getTitlesByTypeAndLength(
+        titleType: TitleType,
+        length: Int,
+    ) = titlesByTypeAndLength[titleType to length].orEmpty()
 
     override fun getTitles() = titlesList
 

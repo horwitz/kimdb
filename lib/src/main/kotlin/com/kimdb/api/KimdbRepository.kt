@@ -1,9 +1,9 @@
 package com.kimdb.api
 
-import com.kimdb.model.Name
 import com.kimdb.model.NConst
-import com.kimdb.model.Title
+import com.kimdb.model.Name
 import com.kimdb.model.TConst
+import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 
 interface KimdbRepository {
@@ -15,7 +15,10 @@ interface KimdbRepository {
 
     fun getName(id: NConst): Name?
 
-    fun getTitlesByTypeAndLength(titleType: TitleType, length: Int): List<Title>
+    fun getTitlesByTypeAndLength(
+        titleType: TitleType,
+        length: Int,
+    ): List<Title>
 
     fun getTitles(): List<Title>
 
