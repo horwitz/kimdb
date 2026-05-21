@@ -9,5 +9,5 @@ data class Title(
     val startYear: Int?,
     val endYear: Int?,
     val runTimeMinutes: Long?,
-    val genres: Set<Genre>?,
+    val genres: Set<Genre>,
 )
