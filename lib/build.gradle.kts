@@ -31,6 +31,14 @@ java {
     }
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDir(rootProject.layout.projectDirectory.dir("src/main/resources"))
+        }
+    }
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 

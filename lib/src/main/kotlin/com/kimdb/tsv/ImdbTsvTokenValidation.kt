@@ -4,6 +4,7 @@ import com.kimdb.model.Genre
 import com.kimdb.model.IsAdult
 import com.kimdb.model.TitleType
 import java.nio.file.Path
+import kotlin.io.path.useLines
 
 data class ImdbTsvTokenValidationReport(
     val titleTypes: Set<String>,
@@ -22,19 +23,29 @@ object ImdbTsvTokenValidation {
     fun validate(
         titleBasicsPath: Path,
         nameBasicsPath: Path,
+    ): ImdbTsvTokenValidationReport =
+        titleBasicsPath.useLines { titleLines ->
+            nameBasicsPath.useLines { nameLines ->
+                validate(titleLines, nameLines)
+            }
+        }
+
+    fun validate(
+        titleBasicsLines: Sequence<String>,
+        nameBasicsLines: Sequence<String>,
     ): ImdbTsvTokenValidationReport {
         val titleTypes = linkedSetOf<String>()
         val isAdultValues = linkedSetOf<String>()
         val genres = linkedSetOf<String>()
         val primaryProfessions = linkedSetOf<String>()
 
-        forEachTsvRow(titleBasicsPath, expectedColumns = 9) { cols ->
+        forEachTsvRow(titleBasicsLines, expectedColumns = 9) { cols ->
             titleTypes += cols[1]
             isAdultValues += cols[4]
             cols[8].toCsvTokensOrEmpty().forEach(genres::add)
         }
 
-        forEachTsvRow(nameBasicsPath, expectedColumns = 6) { cols ->
+        forEachTsvRow(nameBasicsLines, expectedColumns = 6) { cols ->
             cols[4].toCsvTokensOrEmpty().forEach(primaryProfessions::add)
         }
 

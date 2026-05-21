@@ -10,18 +10,24 @@ internal fun forEachTsvRow(
     expectedColumns: Int,
     rowConsumer: (List<String>) -> Unit,
 ) {
-    path.useLines { lines ->
-        lines
-            .drop(1)
-            .filter(String::isNotBlank)
-            .forEach { line ->
-                val cols = line.split('\t')
-                require(cols.size == expectedColumns) {
-                    "Expected $expectedColumns columns, got ${cols.size}: $line"
-                }
-                rowConsumer(cols)
+    path.useLines { lines -> forEachTsvRow(lines, expectedColumns, rowConsumer) }
+}
+
+internal fun forEachTsvRow(
+    lines: Sequence<String>,
+    expectedColumns: Int,
+    rowConsumer: (List<String>) -> Unit,
+) {
+    lines
+        .drop(1)
+        .filter(String::isNotBlank)
+        .forEach { line ->
+            val cols = line.split('\t')
+            require(cols.size == expectedColumns) {
+                "Expected $expectedColumns columns, got ${cols.size}: $line"
             }
-    }
+            rowConsumer(cols)
+        }
 }
 
 internal fun <T> mapTsvRows(
