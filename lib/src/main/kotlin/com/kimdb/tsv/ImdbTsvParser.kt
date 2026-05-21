@@ -9,11 +9,8 @@ import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 import java.nio.file.Path
-import kotlin.io.path.useLines
 
 object ImdbTsvParser {
-    private const val NULL_TOKEN = "\\N"
-
     fun loadRepository(
         titleBasicsPath: Path,
         nameBasicsPath: Path,
@@ -23,27 +20,9 @@ object ImdbTsvParser {
             names = parseNameBasics(nameBasicsPath),
         )
 
-    fun parseTitleBasics(path: Path) = parseTsv(path, expectedColumns = 9, rowParser = ::parseTitleRow)
+    fun parseTitleBasics(path: Path) = mapTsvRows(path, expectedColumns = 9, rowMapper = ::parseTitleRow)
 
-    fun parseNameBasics(path: Path) = parseTsv(path, expectedColumns = 6, rowParser = ::parseNameRow)
-
-    private fun <T> parseTsv(
-        path: Path,
-        expectedColumns: Int,
-        rowParser: (List<String>) -> T,
-    ) =
-        path.useLines { lines ->
-            lines
-                .drop(1)
-                .filter(String::isNotBlank)
-                .map { line ->
-                    val cols = line.split('\t')
-                    require(cols.size == expectedColumns) {
-                        "Expected $expectedColumns columns, got ${cols.size}: $line"
-                    }
-                    rowParser(cols)
-                }.toList()
-        }
+    fun parseNameBasics(path: Path) = mapTsvRows(path, expectedColumns = 6, rowMapper = ::parseNameRow)
 
     private fun parseTitleRow(cols: List<String>) =
         Title(
