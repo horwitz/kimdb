@@ -1,6 +1,7 @@
 package com.kimdb.tsv
 
-import com.kimdb.InMemoryKimdbRepository
+import com.kimdb.api.KimdbRepository
+import com.kimdb.Kimdb
 import com.kimdb.model.Genre
 import com.kimdb.model.IsAdult
 import com.kimdb.model.NConst
@@ -14,8 +15,8 @@ object ImdbTsvParser {
     fun loadRepository(
         titleBasicsPath: Path,
         nameBasicsPath: Path,
-    ): InMemoryKimdbRepository =
-        InMemoryKimdbRepository(
+    ): KimdbRepository =
+        Kimdb.inMemoryRepository(
             titles = parseTitleBasics(titleBasicsPath),
             names = parseNameBasics(nameBasicsPath),
         )

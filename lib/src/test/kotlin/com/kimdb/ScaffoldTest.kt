@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test
 class ScaffoldTest {
     @Test
     fun repositoryScaffoldCompiles() {
-        val repo = InMemoryKimdbRepository()
-        assertTrue(repo.getTitles().none())
-        assertTrue(repo.getNames().none())
+        val repo = Kimdb.inMemoryRepository()
+        assertTrue(repo.getTitles().isEmpty())
+        assertTrue(repo.getNames().isEmpty())
     }
 }
