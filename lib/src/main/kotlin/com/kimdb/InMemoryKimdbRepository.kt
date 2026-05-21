@@ -8,17 +8,14 @@ import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 
 class InMemoryKimdbRepository(
-    titles: Sequence<Title> = emptySequence(),
-    names: Sequence<Name> = emptySequence(),
+    private val titles: List<Title> = emptyList(),
+    private val names: List<Name> = emptyList(),
 ) : KimdbRepository {
-    private val titlesList = titles.toList()
-    private val namesList = names.toList()
-
-    private val titlesByPrimaryTitle = titlesList.groupBy { it.primaryTitle }
-    private val namesByPrimaryName = namesList.groupBy { it.primaryName }
-    private val titleById = titlesList.associateBy { it.tconst }
-    private val nameById = namesList.associateBy { it.nconst }
-    private val titlesByTypeAndLength = titlesList.groupBy { it.titleType to it.primaryTitle.length }
+    private val titlesByPrimaryTitle = titles.groupBy { it.primaryTitle }
+    private val namesByPrimaryName = names.groupBy { it.primaryName }
+    private val titleById = titles.associateBy { it.tconst }
+    private val nameById = names.associateBy { it.nconst }
+    private val titlesByTypeAndLength = titles.groupBy { it.titleType to it.primaryTitle.length }
 
     override fun getTitlesByPrimaryTitle(movieTitleAsString: String) = titlesByPrimaryTitle[movieTitleAsString].orEmpty()
 
@@ -33,7 +30,7 @@ class InMemoryKimdbRepository(
         length: Int,
     ) = titlesByTypeAndLength[titleType to length].orEmpty()
 
-    override fun getTitles() = titlesList
+    override fun getTitles() = titles
 
-    override fun getNames() = namesList
+    override fun getNames() = names
 }
