@@ -25,6 +25,14 @@ java {
     }
 }
 
-tasks.named<Test>("test") {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+
+    // Stable defaults for IMDb-scale integration tests:
+    // - single fork avoids concurrent large in-memory datasets
+    // - periodic fork limits long-lived heap growth
+    maxParallelForks = 1
+    forkEvery = 12
+    minHeapSize = "1g"
+    maxHeapSize = "16g"
 }
