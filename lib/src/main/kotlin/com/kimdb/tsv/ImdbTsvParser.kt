@@ -72,24 +72,16 @@ object ImdbTsvParser {
 
     private fun String.toLongOrNullToken() = if (this == NULL_TOKEN) null else toLong()
 
-    private fun String.toGenresOrEmpty() =
-        if (this == NULL_TOKEN) {
-            emptySet()
-        } else {
-            split(',').filter(String::isNotBlank).map(Genre::of).toSet()
-        }
+    private fun String.toGenresOrEmpty() = toCsvSetOrEmpty(Genre::of)
 
-    private fun String.toStringSetOrEmpty() =
-        if (this == NULL_TOKEN) {
-            emptySet()
-        } else {
-            split(',').filter(String::isNotBlank).toSet()
-        }
+    private fun String.toStringSetOrEmpty() = toCsvSetOrEmpty { it }
 
-    private fun String.toTconstSetOrEmpty() =
+    private fun String.toTconstSetOrEmpty() = toCsvSetOrEmpty(TConst::of)
+
+    private fun <T> String.toCsvSetOrEmpty(f: (String) -> T) =
         if (this == NULL_TOKEN) {
             emptySet()
         } else {
-            split(',').filter(String::isNotBlank).map(TConst::of).toSet()
+            split(',').asSequence().filter(String::isNotBlank).map(f).toSet()
         }
 }
