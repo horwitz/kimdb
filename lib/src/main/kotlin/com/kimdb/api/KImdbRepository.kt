@@ -6,7 +6,7 @@ import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 
-interface KimdbRepository {
+interface KImdbRepository {
     fun getTitlesByPrimaryTitle(movieTitleAsString: String): List<Title>
 
     fun getNamesByPrimaryName(nameAsString: String): List<Name>

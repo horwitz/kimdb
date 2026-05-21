@@ -1,16 +1,16 @@
 package com.kimdb
 
-import com.kimdb.api.KimdbRepository
+import com.kimdb.api.KImdbRepository
 import com.kimdb.model.NConst
 import com.kimdb.model.Name
 import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 
-class InMemoryKimdbRepository(
+class InMemoryKImdbRepository(
     private val titles: List<Title> = emptyList(),
     private val names: List<Name> = emptyList(),
-) : KimdbRepository {
+) : KImdbRepository {
     private val titlesByPrimaryTitle = titles.groupBy { it.primaryTitle }
     private val namesByPrimaryName = names.groupBy { it.primaryName }
     private val titleById = titles.associateBy { it.tconst }
