@@ -7,6 +7,8 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.versions)
     `java-library`
 }
 
@@ -15,7 +17,11 @@ repositories {
 }
 
 dependencies {
+    api(libs.slf4j.api)
+
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.slf4j.simple)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -35,4 +41,15 @@ tasks.withType<Test>().configureEach {
     forkEvery = 12
     minHeapSize = "1g"
     maxHeapSize = "16g"
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+    }
 }
