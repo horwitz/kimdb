@@ -17,7 +17,7 @@ interface KImdbRepository {
 
     fun getTitlesByTypeAndLength(
         titleType: TitleType,
-        length: Int,
+        length: Int
     ): List<Title>
 
     fun getTitles(): List<Title>

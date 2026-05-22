@@ -1,7 +1,7 @@
 package com.kimdb.model
 
 enum class TitleType(
-    val imdbValue: String,
+    val imdbValue: String
 ) {
     MOVIE("movie"),
     SHORT("short"),
@@ -13,7 +13,7 @@ enum class TitleType(
     VIDEO("video"),
     VIDEO_GAME("videoGame"),
     TV_MINI_SERIES("tvMiniSeries"),
-    TV_PILOT("tvPilot"),
+    TV_PILOT("tvPilot")
     ;
 
     companion object {

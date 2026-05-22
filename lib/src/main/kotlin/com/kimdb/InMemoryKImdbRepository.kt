@@ -9,7 +9,7 @@ import com.kimdb.model.TitleType
 
 class InMemoryKImdbRepository(
     private val titles: List<Title> = emptyList(),
-    private val names: List<Name> = emptyList(),
+    private val names: List<Name> = emptyList()
 ) : KImdbRepository {
     private val titlesByPrimaryTitle = titles.groupBy { it.primaryTitle }
     private val namesByPrimaryName = names.groupBy { it.primaryName }
@@ -27,7 +27,7 @@ class InMemoryKImdbRepository(
 
     override fun getTitlesByTypeAndLength(
         titleType: TitleType,
-        length: Int,
+        length: Int
     ) = titlesByTypeAndLength[titleType to length].orEmpty()
 
     override fun getTitles() = titles

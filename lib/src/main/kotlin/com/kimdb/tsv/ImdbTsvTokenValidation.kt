@@ -11,13 +11,13 @@ data class ImdbTsvTokenValidationReport(
     val primaryProfessions: Set<String>,
     val unknownTitleTypes: Set<String>,
     val unknownIsAdultValues: Set<String>,
-    val unknownGenres: Set<String>,
+    val unknownGenres: Set<String>
 )
 
 object ImdbTsvTokenValidation {
     fun validate(
         titleBasicsLines: Sequence<String>,
-        nameBasicsLines: Sequence<String>,
+        nameBasicsLines: Sequence<String>
     ): ImdbTsvTokenValidationReport {
         val titleTypes = linkedSetOf<String>()
         val isAdultValues = linkedSetOf<String>()
@@ -45,7 +45,7 @@ object ImdbTsvTokenValidation {
             primaryProfessions = primaryProfessions,
             unknownTitleTypes = titleTypes - knownTitleTypes,
             unknownIsAdultValues = isAdultValues - knownIsAdultValues,
-            unknownGenres = genres - knownGenres,
+            unknownGenres = genres - knownGenres
         )
     }
 }

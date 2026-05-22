@@ -1,10 +1,10 @@
 package com.kimdb.model
 
 enum class IsAdult(
-    val imdbValue: String,
+    val imdbValue: String
 ) {
     ADULT("1"),
-    NOT_ADULT("0"),
+    NOT_ADULT("0")
     ;
 
     companion object {

@@ -8,7 +8,7 @@ internal const val NULL_TOKEN = "\\N"
 internal fun forEachTsvRow(
     path: Path,
     expectedColumns: Int,
-    rowConsumer: (List<String>) -> Unit,
+    rowConsumer: (List<String>) -> Unit
 ) {
     path.useLines { lines -> forEachTsvRow(lines, expectedColumns, rowConsumer) }
 }
@@ -16,7 +16,7 @@ internal fun forEachTsvRow(
 internal fun forEachTsvRow(
     lines: Sequence<String>,
     expectedColumns: Int,
-    rowConsumer: (List<String>) -> Unit,
+    rowConsumer: (List<String>) -> Unit
 ) {
     lines
         .drop(1)
@@ -33,16 +33,15 @@ internal fun forEachTsvRow(
 internal fun <T> mapTsvRows(
     path: Path,
     expectedColumns: Int,
-    rowMapper: (List<String>) -> T,
+    rowMapper: (List<String>) -> T
 ): List<T> {
     val out = mutableListOf<T>()
     forEachTsvRow(path, expectedColumns) { out += rowMapper(it) }
     return out
 }
 
-internal fun String.toCsvTokensOrEmpty(): List<String> =
-    if (this == NULL_TOKEN) {
-        emptyList()
-    } else {
-        split(',').filter(String::isNotBlank)
-    }
+internal fun String.toCsvTokensOrEmpty(): List<String> = if (this == NULL_TOKEN) {
+    emptyList()
+} else {
+    split(',').filter(String::isNotBlank)
+}

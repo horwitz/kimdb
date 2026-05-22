@@ -9,11 +9,11 @@ import java.nio.file.Path
 object KImdb {
     fun inMemoryRepository(
         titles: List<Title> = emptyList(),
-        names: List<Name> = emptyList(),
+        names: List<Name> = emptyList()
     ): KImdbRepository = InMemoryKImdbRepository(titles, names)
 
     fun repositoryFromTsv(
         titleBasicsPath: Path,
-        nameBasicsPath: Path,
+        nameBasicsPath: Path
     ): KImdbRepository = ImdbTsvParser.loadRepository(titleBasicsPath, nameBasicsPath)
 }

@@ -32,7 +32,7 @@ class ImdbTsvTokenValidationTest {
 
     private fun <T> withResourceLines(
         resourcePath: String,
-        block: (Sequence<String>) -> T,
+        block: (Sequence<String>) -> T
     ): T {
         val stream =
             this::class.java.getResourceAsStream(resourcePath)

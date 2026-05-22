@@ -92,10 +92,20 @@ tasks.withType<Test>().configureEach {
 spotless {
     kotlin {
         target("src/**/*.kt")
-        ktlint()
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ij_kotlin_allow_trailing_comma" to "false",
+                "ij_kotlin_allow_trailing_comma_on_call_site" to "false"
+            )
+        )
     }
     kotlinGradle {
         target("*.gradle.kts")
-        ktlint()
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ij_kotlin_allow_trailing_comma" to "false",
+                "ij_kotlin_allow_trailing_comma_on_call_site" to "false"
+            )
+        )
     }
 }

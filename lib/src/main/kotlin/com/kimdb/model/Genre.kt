@@ -1,7 +1,7 @@
 package com.kimdb.model
 
 enum class Genre(
-    val imdbValue: String,
+    val imdbValue: String
 ) {
     DOCUMENTARY("Documentary"),
     SHORT("Short"),
@@ -31,7 +31,7 @@ enum class Genre(
     GAME_SHOW("Game-Show"),
     REALITY_TV("Reality-TV"),
     ADULT("Adult"),
-    EXPERIMENTAL("Experimental"),
+    EXPERIMENTAL("Experimental")
     ;
 
     companion object {

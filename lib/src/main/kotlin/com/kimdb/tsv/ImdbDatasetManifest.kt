@@ -18,14 +18,14 @@ data class DatasetFileManifest(
     val sizeBytes: Long,
     val sha256: String,
     val rowCount: Long? = null,
-    val header: String? = null,
+    val header: String? = null
 )
 
 @Serializable
 data class ImdbDatasetManifest(
     val createdAtUtc: String,
     val downloadedAtUtc: String?,
-    val files: Map<String, DatasetFileManifest>,
+    val files: Map<String, DatasetFileManifest>
 )
 
 object ImdbDatasetManifestGenerator {
@@ -41,7 +41,7 @@ object ImdbDatasetManifestGenerator {
 
     fun generate(
         resourcesDir: Path,
-        downloadedAtUtc: Instant? = null,
+        downloadedAtUtc: Instant? = null
     ): ImdbDatasetManifest {
         val files = linkedMapOf<String, DatasetFileManifest>()
 
@@ -57,7 +57,7 @@ object ImdbDatasetManifestGenerator {
         files: MutableMap<String, DatasetFileManifest>,
         resourcesDir: Path,
         fileName: String,
-        isTsv: Boolean,
+        isTsv: Boolean
     ) {
         val path = resourcesDir.resolve(fileName)
         if (!path.exists()) return
@@ -72,7 +72,7 @@ object ImdbDatasetManifestGenerator {
 
     private fun tsvFileManifest(
         path: Path,
-        fileName: String,
+        fileName: String
     ): DatasetFileManifest {
         var header: String? = null
         var rows = 0L
@@ -88,26 +88,25 @@ object ImdbDatasetManifestGenerator {
             sizeBytes = path.fileSize(),
             sha256 = sha256(path),
             rowCount = rows,
-            header = header,
+            header = header
         )
     }
 
     private fun binaryFileManifest(
         path: Path,
-        fileName: String,
-    ): DatasetFileManifest =
-        DatasetFileManifest(
-            fileName = fileName,
-            sourceUrl = SOURCE_BASE_URL + fileName,
-            sizeBytes = path.fileSize(),
-            sha256 = sha256(path),
-        )
+        fileName: String
+    ): DatasetFileManifest = DatasetFileManifest(
+        fileName = fileName,
+        sourceUrl = SOURCE_BASE_URL + fileName,
+        sizeBytes = path.fileSize(),
+        sha256 = sha256(path)
+    )
 
     fun toJson(manifest: ImdbDatasetManifest) = json.encodeToString(manifest)
 
     fun writeJson(
         manifest: ImdbDatasetManifest,
-        outputPath: Path,
+        outputPath: Path
     ) {
         outputPath.parent?.let { Files.createDirectories(it) }
         Files.writeString(outputPath, toJson(manifest))

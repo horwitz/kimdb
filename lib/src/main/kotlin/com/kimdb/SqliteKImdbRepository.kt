@@ -14,7 +14,7 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 
 class SqliteKImdbRepository(
-    dbPath: Path,
+    dbPath: Path
 ) : KImdbRepository {
     private object Tables {
         const val TITLES = "titles"
@@ -51,7 +51,7 @@ class SqliteKImdbRepository(
             Columns.START_YEAR,
             Columns.END_YEAR,
             Columns.RUN_TIME_MINUTES,
-            Columns.GENRES,
+            Columns.GENRES
         ).joinToString(", ")
 
     private val nameColumns =
@@ -61,141 +61,123 @@ class SqliteKImdbRepository(
             Columns.BIRTH_YEAR,
             Columns.DEATH_YEAR,
             Columns.PRIMARY_PROFESSION,
-            Columns.KNOWN_FOR_TITLES,
+            Columns.KNOWN_FOR_TITLES
         ).joinToString(", ")
 
     private val jdbcUrl = "jdbc:sqlite:${dbPath.toAbsolutePath()}"
 
-    override fun getTitlesByPrimaryTitle(movieTitleAsString: String) =
-        queryList(
-            """
+    override fun getTitlesByPrimaryTitle(movieTitleAsString: String) = queryList(
+        """
             SELECT $titleColumns
             FROM ${Tables.TITLES}
             WHERE ${Columns.PRIMARY_TITLE} = ?
-            """.trimIndent()
-            ,
-            rowMapper = { toTitle() },
-        ) { ps ->
-            ps.setString(1, movieTitleAsString)
-        }
+        """.trimIndent(),
+        rowMapper = { toTitle() }
+    ) { ps ->
+        ps.setString(1, movieTitleAsString)
+    }
 
-    override fun getNamesByPrimaryName(nameAsString: String) =
-        queryList(
-            """
+    override fun getNamesByPrimaryName(nameAsString: String) = queryList(
+        """
             SELECT $nameColumns
             FROM ${Tables.NAMES}
             WHERE ${Columns.PRIMARY_NAME} = ?
-            """.trimIndent()
-            ,
-            rowMapper = { toName() },
-        ) { ps ->
-            ps.setString(1, nameAsString)
-        }
+        """.trimIndent(),
+        rowMapper = { toName() }
+    ) { ps ->
+        ps.setString(1, nameAsString)
+    }
 
-    override fun getTitle(id: TConst) =
-        queryList(
-            """
+    override fun getTitle(id: TConst) = queryList(
+        """
             SELECT $titleColumns
             FROM ${Tables.TITLES}
             WHERE ${Columns.TCONST} = ?
-            """.trimIndent()
-            ,
-            rowMapper = { toTitle() },
-        ) { ps ->
-            ps.setString(1, id.value)
-        }.firstOrNull()
+        """.trimIndent(),
+        rowMapper = { toTitle() }
+    ) { ps ->
+        ps.setString(1, id.value)
+    }.firstOrNull()
 
-    override fun getName(id: NConst) =
-        queryList(
-            """
+    override fun getName(id: NConst) = queryList(
+        """
             SELECT $nameColumns
             FROM ${Tables.NAMES}
             WHERE ${Columns.NCONST} = ?
-            """.trimIndent()
-            ,
-            rowMapper = { toName() },
-        ) { ps ->
-            ps.setString(1, id.value)
-        }.firstOrNull()
+        """.trimIndent(),
+        rowMapper = { toName() }
+    ) { ps ->
+        ps.setString(1, id.value)
+    }.firstOrNull()
 
     override fun getTitlesByTypeAndLength(
         titleType: TitleType,
-        length: Int,
-    ) =
-        queryList(
-            """
+        length: Int
+    ) = queryList(
+        """
+        SELECT $titleColumns
+        FROM ${Tables.TITLES}
+        WHERE ${Columns.TITLE_TYPE} = ? AND ${Columns.PRIMARY_TITLE_LENGTH} = ?
+        """.trimIndent(),
+        rowMapper = { toTitle() }
+    ) { ps ->
+        ps.setString(1, titleType.imdbValue)
+        ps.setInt(2, length)
+    }
+
+    override fun getTitles() = queryList(
+        """
             SELECT $titleColumns
             FROM ${Tables.TITLES}
-            WHERE ${Columns.TITLE_TYPE} = ? AND ${Columns.PRIMARY_TITLE_LENGTH} = ?
-            """.trimIndent()
-            ,
-            rowMapper = { toTitle() },
-        ) { ps ->
-            ps.setString(1, titleType.imdbValue)
-            ps.setInt(2, length)
-        }
+        """.trimIndent(),
+        rowMapper = { toTitle() }
+    ) {}
 
-    override fun getTitles() =
-        queryList(
-            """
-            SELECT $titleColumns
-            FROM ${Tables.TITLES}
-            """.trimIndent()
-            ,
-            rowMapper = { toTitle() },
-        ) {}
-
-    override fun getNames() =
-        queryList(
-            """
+    override fun getNames() = queryList(
+        """
             SELECT $nameColumns
             FROM ${Tables.NAMES}
-            """.trimIndent()
-            ,
-            rowMapper = { toName() },
-        ) {}
+        """.trimIndent(),
+        rowMapper = { toName() }
+    ) {}
 
     private fun <T> queryList(
         sql: String,
         rowMapper: ResultSet.() -> T,
-        bind: (java.sql.PreparedStatement) -> Unit,
-    ): List<T> =
-        withConnection { connection ->
-            connection.prepareStatement(sql).use { ps ->
-                bind(ps)
-                ps.executeQuery().use { rs ->
-                    val out = mutableListOf<T>()
-                    while (rs.next()) out += rs.rowMapper()
-                    out
-                }
+        bind: (java.sql.PreparedStatement) -> Unit
+    ): List<T> = withConnection { connection ->
+        connection.prepareStatement(sql).use { ps ->
+            bind(ps)
+            ps.executeQuery().use { rs ->
+                val out = mutableListOf<T>()
+                while (rs.next()) out += rs.rowMapper()
+                out
             }
         }
+    }
 
-    private fun <T> withConnection(block: (Connection) -> T) =
-        DriverManager.getConnection(jdbcUrl).use(block)
+    private fun <T> withConnection(block: (Connection) -> T) = DriverManager.getConnection(jdbcUrl).use(block)
 
-    private fun ResultSet.toTitle() =
-        Title(
-            tconst = TConst.of(getString(Columns.TCONST)),
-            titleType = TitleType.of(getString(Columns.TITLE_TYPE)),
-            primaryTitle = getString(Columns.PRIMARY_TITLE),
-            originalTitle = getString(Columns.ORIGINAL_TITLE),
-            isAdult = IsAdult.of(getString(Columns.IS_ADULT)),
-            startYear = getNullableInt(Columns.START_YEAR),
-            endYear = getNullableInt(Columns.END_YEAR),
-            runTimeMinutes = getNullableLong(Columns.RUN_TIME_MINUTES),
-            genres = getNullableString(Columns.GENRES).toCsvSet(Genre::of),
-        )
+    private fun ResultSet.toTitle() = Title(
+        tconst = TConst.of(getString(Columns.TCONST)),
+        titleType = TitleType.of(getString(Columns.TITLE_TYPE)),
+        primaryTitle = getString(Columns.PRIMARY_TITLE),
+        originalTitle = getString(Columns.ORIGINAL_TITLE),
+        isAdult = IsAdult.of(getString(Columns.IS_ADULT)),
+        startYear = getNullableInt(Columns.START_YEAR),
+        endYear = getNullableInt(Columns.END_YEAR),
+        runTimeMinutes = getNullableLong(Columns.RUN_TIME_MINUTES),
+        genres = getNullableString(Columns.GENRES).toCsvSet(Genre::of)
+    )
 
-    private fun ResultSet.toName() =
-        Name(
-            nconst = NConst.of(getString(Columns.NCONST)),
-            primaryName = getString(Columns.PRIMARY_NAME),
-            birthYear = getNullableInt(Columns.BIRTH_YEAR),
-            deathYear = getNullableInt(Columns.DEATH_YEAR),
-            primaryProfession = getNullableString(Columns.PRIMARY_PROFESSION).toCsvSet { it },
-            knownForTitles = getNullableString(Columns.KNOWN_FOR_TITLES).toCsvSet(TConst::of),
-        )
+    private fun ResultSet.toName() = Name(
+        nconst = NConst.of(getString(Columns.NCONST)),
+        primaryName = getString(Columns.PRIMARY_NAME),
+        birthYear = getNullableInt(Columns.BIRTH_YEAR),
+        deathYear = getNullableInt(Columns.DEATH_YEAR),
+        primaryProfession = getNullableString(Columns.PRIMARY_PROFESSION).toCsvSet { it },
+        knownForTitles = getNullableString(Columns.KNOWN_FOR_TITLES).toCsvSet(TConst::of)
+    )
 
     private fun ResultSet.getNullableInt(column: String): Int? {
         val value = getInt(column)
@@ -209,12 +191,11 @@ class SqliteKImdbRepository(
 
     private fun ResultSet.getNullableString(column: String): String? = getString(column)
 
-    private fun <T> String?.toCsvSet(mapper: (String) -> T) =
-        this
-            ?.split(',')
-            ?.asSequence()
-            ?.filter(String::isNotBlank)
-            ?.map(mapper)
-            ?.toSet()
-            ?: emptySet()
+    private fun <T> String?.toCsvSet(mapper: (String) -> T) = this
+        ?.split(',')
+        ?.asSequence()
+        ?.filter(String::isNotBlank)
+        ?.map(mapper)
+        ?.toSet()
+        ?: emptySet()
 }

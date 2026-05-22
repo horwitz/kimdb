@@ -80,7 +80,7 @@ private fun createSchema(connection: Connection) {
 private fun importTitles(
     connection: Connection,
     titlePath: Path,
-    batchSize: Int,
+    batchSize: Int
 ) {
     val sql =
         """
@@ -114,7 +114,7 @@ private fun importTitles(
 private fun importNames(
     connection: Connection,
     namePath: Path,
-    batchSize: Int,
+    batchSize: Int
 ) {
     val sql =
         """
@@ -152,19 +152,19 @@ private fun createIndexes(connection: Connection) {
 
 private fun PreparedStatement.setNullableInt(
     index: Int,
-    value: String,
+    value: String
 ) = setNullableToken(index, value, Types.INTEGER) { setInt(index, it.toInt()) }
 
 private fun PreparedStatement.setNullableString(
     index: Int,
-    value: String,
+    value: String
 ) = setNullableToken(index, value, Types.VARCHAR) { setString(index, it) }
 
 private inline fun PreparedStatement.setNullableToken(
     index: Int,
     value: String,
     sqlType: Int,
-    setValue: PreparedStatement.(String) -> Unit,
+    setValue: PreparedStatement.(String) -> Unit
 ) {
     if (value == NULL_TOKEN) {
         setNull(index, sqlType)

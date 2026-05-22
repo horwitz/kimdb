@@ -6,5 +6,5 @@ data class Name(
     val birthYear: Int?,
     val deathYear: Int?,
     val primaryProfession: Set<String>,
-    val knownForTitles: Set<TConst>,
+    val knownForTitles: Set<TConst>
 )

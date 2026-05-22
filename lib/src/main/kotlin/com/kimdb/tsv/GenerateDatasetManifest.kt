@@ -20,7 +20,7 @@ private class GenerateDatasetManifestCommand : CliktCommand(name = "generate-dat
     private val downloadedAtUtc by option(
         "-t",
         "--downloaded-at-utc",
-        help = "Optional download timestamp (ISO-8601 UTC), e.g., 2026-05-22T14:00:00Z.",
+        help = "Optional download timestamp (ISO-8601 UTC), e.g., 2026-05-22T14:00:00Z."
     ).convert { Instant.parse(it) }
 
     override fun run() {
