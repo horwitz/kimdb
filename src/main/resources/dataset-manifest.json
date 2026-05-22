@@ -1,0 +1,34 @@
+{
+  "createdAtUtc": "2026-05-22T19:13:57.752069600Z",
+  "downloadedAtUtc": "2026-05-21T10:48:49Z",
+  "files": {
+    "title.basics.tsv": {
+      "fileName": "title.basics.tsv",
+      "sourceUrl": "https://datasets.imdbws.com/title.basics.tsv.gz",
+      "sizeBytes": 1085190122,
+      "sha256": "c98ccc3ca2a5dd58372a7de710fe896b2af8666745e816911cccbf116463511d",
+      "rowCount": 12515073,
+      "header": "tconst\ttitleType\tprimaryTitle\toriginalTitle\tisAdult\tstartYear\tendYear\truntimeMinutes\tgenres"
+    },
+    "title.basics.tsv.gz": {
+      "fileName": "title.basics.tsv.gz",
+      "sourceUrl": "https://datasets.imdbws.com/title.basics.tsv.gz",
+      "sizeBytes": 221918375,
+      "sha256": "abb7f078ea3024bdf18779787165631805543722bad9e8dade7d9b90ec96d645"
+    },
+    "name.basics.tsv": {
+      "fileName": "name.basics.tsv",
+      "sourceUrl": "https://datasets.imdbws.com/name.basics.tsv.gz",
+      "sizeBytes": 948431079,
+      "sha256": "250e97602e533f233ad5b6a6fa9ffe3644fa8138cb8d4c3d6d25578208df7de3",
+      "rowCount": 15343396,
+      "header": "nconst\tprimaryName\tbirthYear\tdeathYear\tprimaryProfession\tknownForTitles"
+    },
+    "name.basics.tsv.gz": {
+      "fileName": "name.basics.tsv.gz",
+      "sourceUrl": "https://datasets.imdbws.com/name.basics.tsv.gz",
+      "sizeBytes": 303699968,
+      "sha256": "1b06ff244a898578890297cf129389a652d5f9743034825d329aeaad2333958f"
+    }
+  }
+}
