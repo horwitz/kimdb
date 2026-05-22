@@ -62,6 +62,14 @@ tasks.register<JavaExec>("importImdbToSqlite") {
     workingDir = rootProject.projectDir
 }
 
+tasks.register<JavaExec>("benchmarkBackends") {
+    group = "application"
+    description = "Benchmark in-memory vs SQLite repository operations."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.bench.BenchmarkBackendsKt"
+    workingDir = rootProject.projectDir
+}
+
 sourceSets {
     main {
         java.srcDirs("src/main/kotlin")
