@@ -29,3 +29,29 @@ Where:
 - `-t` / `--downloaded-at-utc`: optional original download timestamp (UTC, ISO-8601)
 
 The manifest includes file sizes and SHA-256 checksums for both TSV and GZ files, plus row-count/header metadata for TSV files.
+
+## SQLite Smoke Test
+
+Import TSV data into SQLite:
+
+```bash
+./gradlew :lib:importImdbToSqlite
+```
+
+With explicit paths/options:
+
+```bash
+./gradlew :lib:importImdbToSqlite --args="-r src/main/resources -d build/kimdb.db -b 2000"
+```
+
+Run backend smoke test/benchmark (in-memory vs SQLite):
+
+```bash
+./gradlew :lib:benchmarkBackends
+```
+
+With explicit benchmark inputs:
+
+```bash
+./gradlew :lib:benchmarkBackends --args="-r src/main/resources -d build/kimdb.db -w 10 -n 50 --sample-title \"The Avengers\" --sample-name \"Michelle Williams\" --sample-tconst tt0110912 --sample-type movie --sample-length 10"
+```
