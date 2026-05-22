@@ -8,8 +8,8 @@ import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 
 class InMemoryKImdbRepository(
-    private val titles: List<Title> = emptyList(),
-    private val names: List<Name> = emptyList()
+    private val titles: List<Title>,
+    private val names: List<Name>
 ) : KImdbRepository {
     private val titlesByPrimaryTitle = titles.groupBy { it.primaryTitle }
     private val namesByPrimaryName = names.groupBy { it.primaryName }

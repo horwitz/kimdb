@@ -8,8 +8,8 @@ import java.nio.file.Path
 
 object KImdb {
     fun inMemoryRepository(
-        titles: List<Title> = emptyList(),
-        names: List<Name> = emptyList()
+        titles: List<Title>,
+        names: List<Name>
     ): KImdbRepository = InMemoryKImdbRepository(titles, names)
 
     fun inMemoryRepositoryFromTsv(
