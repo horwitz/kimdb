@@ -21,6 +21,7 @@ dependencies {
     api(libs.slf4j.api)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.clikt)
+    implementation(libs.sqlite.jdbc)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
@@ -39,6 +40,14 @@ tasks.register<JavaExec>("generateDatasetManifest") {
     description = "Generate dataset-manifest.json for IMDb TSV/GZ files."
     classpath = sourceSets["main"].runtimeClasspath
     mainClass = "com.kimdb.tsv.GenerateDatasetManifestKt"
+    workingDir = rootProject.projectDir
+}
+
+tasks.register<JavaExec>("importImdbToSqlite") {
+    group = "application"
+    description = "Import IMDb TSV data into SQLite database."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.tsv.ImportImdbToSqliteKt"
     workingDir = rootProject.projectDir
 }
 
