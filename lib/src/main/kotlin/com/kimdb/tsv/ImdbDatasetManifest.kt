@@ -82,6 +82,7 @@ object ImdbDatasetManifestGenerator {
                 rows++
             }
         }
+
         return DatasetFileManifest(
             fileName = fileName,
             sourceUrl = SOURCE_BASE_URL + fileName.removeSuffix(".tsv") + ".tsv.gz",
