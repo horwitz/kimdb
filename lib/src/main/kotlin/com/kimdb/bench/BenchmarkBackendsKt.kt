@@ -127,7 +127,7 @@ private fun writeOutput(
     path.parent?.let { Files.createDirectories(it) }
     Files.write(
         path,
-        lines + "",
+        lines,
         Charsets.UTF_8,
         StandardOpenOption.CREATE,
         StandardOpenOption.TRUNCATE_EXISTING,
