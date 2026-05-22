@@ -63,8 +63,7 @@ private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends
                 "getTitlesByPrimaryTitle" to { repo: KImdbRepository -> repo.getTitlesByPrimaryTitle(sampleTitle).size },
                 "getNamesByPrimaryName" to { repo: KImdbRepository -> repo.getNamesByPrimaryName(sampleName).size },
                 "getTitle" to { repo: KImdbRepository -> repo.getTitle(tconst) != null },
-                "getTitlesByTypeAndLength" to {
-                        repo: KImdbRepository ->
+                "getTitlesByTypeAndLength" to { repo: KImdbRepository ->
                     repo.getTitlesByTypeAndLength(titleType, sampleLength).size
                 }
             )
