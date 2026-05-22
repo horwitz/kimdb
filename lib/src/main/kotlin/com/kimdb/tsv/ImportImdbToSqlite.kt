@@ -46,7 +46,7 @@ private fun createSchema(connection: Connection) {
     connection.createStatement().use { statement ->
         statement.execute(
             """
-            CREATE TABLE IF NOT EXISTS titles (
+            CREATE TABLE IF NOT EXISTS ${SqliteSchema.Tables.TITLES} (
               tconst TEXT PRIMARY KEY,
               titleType TEXT NOT NULL,
               primaryTitle TEXT NOT NULL,
@@ -62,7 +62,7 @@ private fun createSchema(connection: Connection) {
         )
         statement.execute(
             """
-            CREATE TABLE IF NOT EXISTS names (
+            CREATE TABLE IF NOT EXISTS ${SqliteSchema.Tables.NAMES} (
               nconst TEXT PRIMARY KEY,
               primaryName TEXT NOT NULL,
               birthYear INTEGER,
@@ -72,8 +72,8 @@ private fun createSchema(connection: Connection) {
             );
             """.trimIndent()
         )
-        statement.execute("DELETE FROM titles;")
-        statement.execute("DELETE FROM names;")
+        statement.execute("DELETE FROM ${SqliteSchema.Tables.TITLES};")
+        statement.execute("DELETE FROM ${SqliteSchema.Tables.NAMES};")
     }
 }
 
@@ -142,11 +142,21 @@ private fun importNames(
 
 private fun createIndexes(connection: Connection) {
     connection.createStatement().use { statement ->
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_titles_tconst ON titles(tconst);")
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_titles_primaryTitle ON titles(primaryTitle);")
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_titles_type_length ON titles(titleType, primaryTitleLength);")
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_names_nconst ON names(nconst);")
-        statement.execute("CREATE INDEX IF NOT EXISTS idx_names_primaryName ON names(primaryName);")
+        statement.execute(
+            "CREATE INDEX IF NOT EXISTS ${SqliteSchema.Indexes.TITLES_TCONST} ON ${SqliteSchema.Tables.TITLES}(tconst);"
+        )
+        statement.execute(
+            "CREATE INDEX IF NOT EXISTS ${SqliteSchema.Indexes.TITLES_PRIMARY_TITLE} ON ${SqliteSchema.Tables.TITLES}(primaryTitle);"
+        )
+        statement.execute(
+            "CREATE INDEX IF NOT EXISTS ${SqliteSchema.Indexes.TITLES_TYPE_LENGTH} ON ${SqliteSchema.Tables.TITLES}(titleType, primaryTitleLength);"
+        )
+        statement.execute(
+            "CREATE INDEX IF NOT EXISTS ${SqliteSchema.Indexes.NAMES_NCONST} ON ${SqliteSchema.Tables.NAMES}(nconst);"
+        )
+        statement.execute(
+            "CREATE INDEX IF NOT EXISTS ${SqliteSchema.Indexes.NAMES_PRIMARY_NAME} ON ${SqliteSchema.Tables.NAMES}(primaryName);"
+        )
     }
 }
 

@@ -44,6 +44,18 @@ With explicit paths/options:
 ./gradlew :lib:importImdbToSqlite --args="-r src/main/resources -d build/kimdb.db -b 2000"
 ```
 
+Verify import row counts and required indexes:
+
+```bash
+./gradlew :lib:verifyImdbToSqlite
+```
+
+With explicit paths:
+
+```bash
+./gradlew :lib:verifyImdbToSqlite --args="-r src/main/resources -d build/kimdb.db"
+```
+
 Run backend smoke test/benchmark (in-memory vs SQLite):
 
 ```bash

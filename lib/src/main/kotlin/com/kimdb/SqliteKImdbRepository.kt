@@ -8,6 +8,7 @@ import com.kimdb.model.Name
 import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
+import com.kimdb.tsv.SqliteSchema
 import java.nio.file.Path
 import java.sql.Connection
 import java.sql.DriverManager
@@ -16,52 +17,29 @@ import java.sql.ResultSet
 class SqliteKImdbRepository(
     dbPath: Path
 ) : KImdbRepository {
-    private object Tables {
-        const val TITLES = "titles"
-        const val NAMES = "names"
-    }
-
-    private object Columns {
-        const val TCONST = "tconst"
-        const val TITLE_TYPE = "titleType"
-        const val PRIMARY_TITLE = "primaryTitle"
-        const val ORIGINAL_TITLE = "originalTitle"
-        const val IS_ADULT = "isAdult"
-        const val START_YEAR = "startYear"
-        const val END_YEAR = "endYear"
-        const val RUN_TIME_MINUTES = "runTimeMinutes"
-        const val GENRES = "genres"
-        const val PRIMARY_TITLE_LENGTH = "primaryTitleLength"
-
-        const val NCONST = "nconst"
-        const val PRIMARY_NAME = "primaryName"
-        const val BIRTH_YEAR = "birthYear"
-        const val DEATH_YEAR = "deathYear"
-        const val PRIMARY_PROFESSION = "primaryProfession"
-        const val KNOWN_FOR_TITLES = "knownForTitles"
-    }
+    private val c = SqliteSchema.Columns
 
     private val titleColumns =
         listOf(
-            Columns.TCONST,
-            Columns.TITLE_TYPE,
-            Columns.PRIMARY_TITLE,
-            Columns.ORIGINAL_TITLE,
-            Columns.IS_ADULT,
-            Columns.START_YEAR,
-            Columns.END_YEAR,
-            Columns.RUN_TIME_MINUTES,
-            Columns.GENRES
+            c.TCONST,
+            c.TITLE_TYPE,
+            c.PRIMARY_TITLE,
+            c.ORIGINAL_TITLE,
+            c.IS_ADULT,
+            c.START_YEAR,
+            c.END_YEAR,
+            c.RUN_TIME_MINUTES,
+            c.GENRES
         ).joinToString(", ")
 
     private val nameColumns =
         listOf(
-            Columns.NCONST,
-            Columns.PRIMARY_NAME,
-            Columns.BIRTH_YEAR,
-            Columns.DEATH_YEAR,
-            Columns.PRIMARY_PROFESSION,
-            Columns.KNOWN_FOR_TITLES
+            c.NCONST,
+            c.PRIMARY_NAME,
+            c.BIRTH_YEAR,
+            c.DEATH_YEAR,
+            c.PRIMARY_PROFESSION,
+            c.KNOWN_FOR_TITLES
         ).joinToString(", ")
 
     private val jdbcUrl = "jdbc:sqlite:${dbPath.toAbsolutePath()}"
@@ -69,8 +47,8 @@ class SqliteKImdbRepository(
     override fun getTitlesByPrimaryTitle(movieTitleAsString: String) = queryList(
         """
             SELECT $titleColumns
-            FROM ${Tables.TITLES}
-            WHERE ${Columns.PRIMARY_TITLE} = ?
+            FROM ${SqliteSchema.Tables.TITLES}
+            WHERE ${c.PRIMARY_TITLE} = ?
         """.trimIndent(),
         rowMapper = { toTitle() }
     ) { ps ->
@@ -80,8 +58,8 @@ class SqliteKImdbRepository(
     override fun getNamesByPrimaryName(nameAsString: String) = queryList(
         """
             SELECT $nameColumns
-            FROM ${Tables.NAMES}
-            WHERE ${Columns.PRIMARY_NAME} = ?
+            FROM ${SqliteSchema.Tables.NAMES}
+            WHERE ${c.PRIMARY_NAME} = ?
         """.trimIndent(),
         rowMapper = { toName() }
     ) { ps ->
@@ -91,8 +69,8 @@ class SqliteKImdbRepository(
     override fun getTitle(id: TConst) = queryList(
         """
             SELECT $titleColumns
-            FROM ${Tables.TITLES}
-            WHERE ${Columns.TCONST} = ?
+            FROM ${SqliteSchema.Tables.TITLES}
+            WHERE ${c.TCONST} = ?
         """.trimIndent(),
         rowMapper = { toTitle() }
     ) { ps ->
@@ -102,8 +80,8 @@ class SqliteKImdbRepository(
     override fun getName(id: NConst) = queryList(
         """
             SELECT $nameColumns
-            FROM ${Tables.NAMES}
-            WHERE ${Columns.NCONST} = ?
+            FROM ${SqliteSchema.Tables.NAMES}
+            WHERE ${c.NCONST} = ?
         """.trimIndent(),
         rowMapper = { toName() }
     ) { ps ->
@@ -116,8 +94,8 @@ class SqliteKImdbRepository(
     ) = queryList(
         """
         SELECT $titleColumns
-        FROM ${Tables.TITLES}
-        WHERE ${Columns.TITLE_TYPE} = ? AND ${Columns.PRIMARY_TITLE_LENGTH} = ?
+        FROM ${SqliteSchema.Tables.TITLES}
+        WHERE ${c.TITLE_TYPE} = ? AND ${c.PRIMARY_TITLE_LENGTH} = ?
         """.trimIndent(),
         rowMapper = { toTitle() }
     ) { ps ->
@@ -128,7 +106,7 @@ class SqliteKImdbRepository(
     override fun getTitles() = queryList(
         """
             SELECT $titleColumns
-            FROM ${Tables.TITLES}
+            FROM ${SqliteSchema.Tables.TITLES}
         """.trimIndent(),
         rowMapper = { toTitle() }
     ) {}
@@ -136,7 +114,7 @@ class SqliteKImdbRepository(
     override fun getNames() = queryList(
         """
             SELECT $nameColumns
-            FROM ${Tables.NAMES}
+            FROM ${SqliteSchema.Tables.NAMES}
         """.trimIndent(),
         rowMapper = { toName() }
     ) {}
@@ -159,24 +137,24 @@ class SqliteKImdbRepository(
     private fun <T> withConnection(block: (Connection) -> T) = DriverManager.getConnection(jdbcUrl).use(block)
 
     private fun ResultSet.toTitle() = Title(
-        tconst = TConst.of(getString(Columns.TCONST)),
-        titleType = TitleType.of(getString(Columns.TITLE_TYPE)),
-        primaryTitle = getString(Columns.PRIMARY_TITLE),
-        originalTitle = getString(Columns.ORIGINAL_TITLE),
-        isAdult = IsAdult.of(getString(Columns.IS_ADULT)),
-        startYear = getNullableInt(Columns.START_YEAR),
-        endYear = getNullableInt(Columns.END_YEAR),
-        runTimeMinutes = getNullableLong(Columns.RUN_TIME_MINUTES),
-        genres = getNullableString(Columns.GENRES).toCsvSet(Genre::of)
+        tconst = TConst.of(getString(c.TCONST)),
+        titleType = TitleType.of(getString(c.TITLE_TYPE)),
+        primaryTitle = getString(c.PRIMARY_TITLE),
+        originalTitle = getString(c.ORIGINAL_TITLE),
+        isAdult = IsAdult.of(getString(c.IS_ADULT)),
+        startYear = getNullableInt(c.START_YEAR),
+        endYear = getNullableInt(c.END_YEAR),
+        runTimeMinutes = getNullableLong(c.RUN_TIME_MINUTES),
+        genres = getNullableString(c.GENRES).toCsvSet(Genre::of)
     )
 
     private fun ResultSet.toName() = Name(
-        nconst = NConst.of(getString(Columns.NCONST)),
-        primaryName = getString(Columns.PRIMARY_NAME),
-        birthYear = getNullableInt(Columns.BIRTH_YEAR),
-        deathYear = getNullableInt(Columns.DEATH_YEAR),
-        primaryProfession = getNullableString(Columns.PRIMARY_PROFESSION).toCsvSet { it },
-        knownForTitles = getNullableString(Columns.KNOWN_FOR_TITLES).toCsvSet(TConst::of)
+        nconst = NConst.of(getString(c.NCONST)),
+        primaryName = getString(c.PRIMARY_NAME),
+        birthYear = getNullableInt(c.BIRTH_YEAR),
+        deathYear = getNullableInt(c.DEATH_YEAR),
+        primaryProfession = getNullableString(c.PRIMARY_PROFESSION).toCsvSet { it },
+        knownForTitles = getNullableString(c.KNOWN_FOR_TITLES).toCsvSet(TConst::of)
     )
 
     private fun ResultSet.getNullableInt(column: String): Int? {

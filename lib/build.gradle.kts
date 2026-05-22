@@ -55,6 +55,14 @@ tasks.register<JavaExec>("importImdbToSqlite") {
     workingDir = rootProject.projectDir
 }
 
+tasks.register<JavaExec>("verifyImdbToSqlite") {
+    group = "application"
+    description = "Verify SQLite import row counts/indexes against IMDb TSV files."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.tsv.VerifyImdbToSqliteKt"
+    workingDir = rootProject.projectDir
+}
+
 tasks.register<JavaExec>("benchmarkBackends") {
     group = "application"
     description = "Benchmark in-memory vs SQLite repository operations."
