@@ -20,6 +20,7 @@ repositories {
 dependencies {
     api(libs.slf4j.api)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.clikt)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)
@@ -31,6 +32,13 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+tasks.register<JavaExec>("generateDatasetManifest") {
+    group = "application"
+    description = "Generate dataset-manifest.json for IMDb TSV/GZ files."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.tsv.GenerateDatasetManifestKt"
 }
 
 sourceSets {

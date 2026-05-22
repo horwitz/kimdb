@@ -6,6 +6,7 @@ import java.nio.file.Path
 import java.security.MessageDigest
 import java.time.Instant
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.io.path.bufferedReader
 import kotlin.io.path.exists
@@ -101,6 +102,14 @@ object ImdbDatasetManifestGenerator {
         )
 
     fun toJson(manifest: ImdbDatasetManifest) = json.encodeToString(manifest)
+
+    fun writeJson(
+        manifest: ImdbDatasetManifest,
+        outputPath: Path,
+    ) {
+        outputPath.parent?.let { Files.createDirectories(it) }
+        Files.writeString(outputPath, toJson(manifest))
+    }
 
     private fun sha256(path: Path): String {
         val digest = MessageDigest.getInstance("SHA-256")
