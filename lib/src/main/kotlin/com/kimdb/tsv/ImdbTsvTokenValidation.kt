@@ -3,8 +3,6 @@ package com.kimdb.tsv
 import com.kimdb.model.Genre
 import com.kimdb.model.IsAdult
 import com.kimdb.model.TitleType
-import java.nio.file.Path
-import kotlin.io.path.useLines
 
 data class ImdbTsvTokenValidationReport(
     val titleTypes: Set<String>,
@@ -14,22 +12,9 @@ data class ImdbTsvTokenValidationReport(
     val unknownTitleTypes: Set<String>,
     val unknownIsAdultValues: Set<String>,
     val unknownGenres: Set<String>,
-) {
-    val isCompatibleWithModel: Boolean
-        get() = unknownTitleTypes.isEmpty() && unknownIsAdultValues.isEmpty() && unknownGenres.isEmpty()
-}
+)
 
 object ImdbTsvTokenValidation {
-    fun validate(
-        titleBasicsPath: Path,
-        nameBasicsPath: Path,
-    ): ImdbTsvTokenValidationReport =
-        titleBasicsPath.useLines { titleLines ->
-            nameBasicsPath.useLines { nameLines ->
-                validate(titleLines, nameLines)
-            }
-        }
-
     fun validate(
         titleBasicsLines: Sequence<String>,
         nameBasicsLines: Sequence<String>,
