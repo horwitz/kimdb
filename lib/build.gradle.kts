@@ -35,6 +35,17 @@ java {
     }
 }
 
+kotlin {
+    sourceSets {
+        named("main") {
+            kotlin.srcDirs("src/main/kotlin")
+        }
+        named("test") {
+            kotlin.srcDirs("src/test/kotlin")
+        }
+    }
+}
+
 tasks.register<JavaExec>("generateDatasetManifest") {
     group = "application"
     description = "Generate dataset-manifest.json for IMDb TSV/GZ files."
@@ -52,7 +63,14 @@ tasks.register<JavaExec>("importImdbToSqlite") {
 }
 
 sourceSets {
+    main {
+        java.srcDirs("src/main/kotlin")
+        resources.srcDirs("src/main/resources")
+    }
+
     test {
+        java.srcDirs("src/test/kotlin")
+        resources.srcDirs("src/test/resources")
         resources {
             srcDir(rootProject.layout.projectDirectory.dir("src/main/resources"))
         }
