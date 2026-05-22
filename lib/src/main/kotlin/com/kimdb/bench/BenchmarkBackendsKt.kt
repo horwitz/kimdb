@@ -10,8 +10,22 @@ import com.kimdb.api.KImdbRepository
 import com.kimdb.model.TConst
 import com.kimdb.model.TitleType
 import com.kimdb.tsv.ImdbDatasetManifestGenerator
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardOpenOption
 import kotlin.system.measureNanoTime
+
+private enum class OutputFormat {
+    TEXT,
+    CSV;
+
+    companion object {
+        private val byToken = entries.associateBy { it.name.lowercase() }
+
+        fun of(value: String) = byToken[value.lowercase()]
+            ?: throw IllegalArgumentException("Unknown format: $value (expected: text or csv)")
+    }
+}
 
 private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends") {
     private val resourcesDir by option("-r", "--resources-dir", help = "Directory containing IMDb TSV files.")
@@ -46,12 +60,25 @@ private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends
         .convert { it.toInt() }
         .default(10)
 
+    private val format by option("-f", "--format", help = "Output format: text or csv.")
+        .convert { OutputFormat.of(it) }
+        .default(OutputFormat.TEXT)
+
+    private val outputPath by option("-o", "--output", help = "Optional output file path.")
+        .convert { Path.of(it) }
+
     override fun run() {
         require(warmup >= 0) { "warmup must be >= 0" }
         require(repetitions > 0) { "repetitions must be > 0" }
 
         val titleBasics = resourcesDir.resolve(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV)
         val nameBasics = resourcesDir.resolve(ImdbDatasetManifestGenerator.NAME_BASICS_TSV)
+        require(Files.isRegularFile(titleBasics)) { "Missing TSV file: $titleBasics" }
+        require(Files.isRegularFile(nameBasics)) { "Missing TSV file: $nameBasics" }
+        require(Files.isRegularFile(sqlitePath)) {
+            "Missing SQLite DB file: $sqlitePath (run :lib:importImdbToSqlite first)"
+        }
+
         val inMemory = KImdb.inMemoryRepositoryFromTsv(titleBasics, nameBasics)
         val sqlite = KImdb.sqliteRepository(sqlitePath)
 
@@ -68,7 +95,13 @@ private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends
                 }
             )
 
-        echo("Backend benchmark (ns/op): warmup=$warmup repetitions=$repetitions")
+        val outputLines = mutableListOf<String>()
+
+        outputLines += when (format) {
+            OutputFormat.TEXT -> "Backend benchmark (ns/op): warmup=$warmup repetitions=$repetitions"
+            OutputFormat.CSV -> "operation,in_memory_ns,sqlite_ns,sqlite_over_in_memory_ratio"
+        }
+
         operations.forEach { (name, op) ->
             runWarmup(inMemory, warmup, op)
             runWarmup(sqlite, warmup, op)
@@ -76,9 +109,30 @@ private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends
             val inMemoryNs = runMeasured(inMemory, repetitions, op)
             val sqliteNs = runMeasured(sqlite, repetitions, op)
             val ratio = sqliteNs.toDouble() / inMemoryNs.toDouble()
-            echo("$name: inMemory=${inMemoryNs}ns sqlite=${sqliteNs}ns ratio=${"%.2f".format(ratio)}x")
+            outputLines += when (format) {
+                OutputFormat.TEXT -> "$name: inMemory=${inMemoryNs}ns sqlite=${sqliteNs}ns ratio=${"%.2f".format(ratio)}x"
+                OutputFormat.CSV -> "$name,$inMemoryNs,$sqliteNs,${"%.4f".format(ratio)}"
+            }
         }
+
+        outputLines.forEach(::echo)
+        outputPath?.let { writeOutput(it, outputLines) }
     }
+}
+
+private fun writeOutput(
+    path: Path,
+    lines: List<String>
+) {
+    path.parent?.let { Files.createDirectories(it) }
+    Files.write(
+        path,
+        lines + "",
+        Charsets.UTF_8,
+        StandardOpenOption.CREATE,
+        StandardOpenOption.TRUNCATE_EXISTING,
+        StandardOpenOption.WRITE
+    )
 }
 
 private fun runWarmup(
