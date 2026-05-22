@@ -12,7 +12,7 @@ object KImdb {
         names: List<Name> = emptyList()
     ): KImdbRepository = InMemoryKImdbRepository(titles, names)
 
-    fun repositoryFromTsv(
+    fun inMemoryRepositoryFromTsv(
         titleBasicsPath: Path,
         nameBasicsPath: Path
     ): KImdbRepository = ImdbTsvParser.loadRepository(titleBasicsPath, nameBasicsPath)
