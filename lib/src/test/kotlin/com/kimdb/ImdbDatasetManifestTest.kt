@@ -8,14 +8,14 @@ import java.nio.file.Path
 class ImdbDatasetManifestTest {
     @Test
     fun manifestIncludesTsvAndGzFilesWhenPresent() {
-        val resourcesDir = resolveResourcesDirFromClasspath("/title.basics.tsv")
+        val resourcesDir = resolveResourcesDirFromClasspath("/${ImdbDatasetManifestGenerator.TITLE_BASICS_TSV}")
         val manifest = ImdbDatasetManifestGenerator.generate(resourcesDir)
         val keys = manifest.files.keys
 
-        assertTrue("title.basics.tsv" in keys)
-        assertTrue("title.basics.tsv.gz" in keys)
-        assertTrue("name.basics.tsv" in keys)
-        assertTrue("name.basics.tsv.gz" in keys)
+        assertTrue(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV in keys)
+        assertTrue(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV_GZ in keys)
+        assertTrue(ImdbDatasetManifestGenerator.NAME_BASICS_TSV in keys)
+        assertTrue(ImdbDatasetManifestGenerator.NAME_BASICS_TSV_GZ in keys)
 
         manifest.files.forEach { (key, file) ->
             assertTrue(file.sizeBytes > 0L, "Expected positive size for $key")

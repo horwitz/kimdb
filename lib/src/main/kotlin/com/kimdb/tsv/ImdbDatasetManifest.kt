@@ -30,6 +30,10 @@ data class ImdbDatasetManifest(
 
 object ImdbDatasetManifestGenerator {
     private const val SOURCE_BASE_URL = "https://datasets.imdbws.com/"
+    const val TITLE_BASICS_TSV = "title.basics.tsv"
+    const val NAME_BASICS_TSV = "name.basics.tsv"
+    const val TITLE_BASICS_TSV_GZ = "$TITLE_BASICS_TSV.gz"
+    const val NAME_BASICS_TSV_GZ = "$NAME_BASICS_TSV.gz"
     private val json =
         Json {
             prettyPrint = true
@@ -42,10 +46,10 @@ object ImdbDatasetManifestGenerator {
     ): ImdbDatasetManifest {
         val files = linkedMapOf<String, DatasetFileManifest>()
 
-        addIfExists(files, resourcesDir, "title.basics.tsv", isTsv = true)
-        addIfExists(files, resourcesDir, "title.basics.tsv.gz", isTsv = false)
-        addIfExists(files, resourcesDir, "name.basics.tsv", isTsv = true)
-        addIfExists(files, resourcesDir, "name.basics.tsv.gz", isTsv = false)
+        addIfExists(files, resourcesDir, TITLE_BASICS_TSV, isTsv = true)
+        addIfExists(files, resourcesDir, TITLE_BASICS_TSV_GZ, isTsv = false)
+        addIfExists(files, resourcesDir, NAME_BASICS_TSV, isTsv = true)
+        addIfExists(files, resourcesDir, NAME_BASICS_TSV_GZ, isTsv = false)
 
         return ImdbDatasetManifest(Instant.now().toString(), downloadedAtUtc?.toString(), files)
     }

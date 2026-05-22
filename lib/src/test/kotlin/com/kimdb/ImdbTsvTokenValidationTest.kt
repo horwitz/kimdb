@@ -1,5 +1,6 @@
 package com.kimdb
 
+import com.kimdb.tsv.ImdbDatasetManifestGenerator
 import com.kimdb.tsv.ImdbTsvTokenValidation
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -7,8 +8,8 @@ import org.junit.jupiter.api.Test
 class ImdbTsvTokenValidationTest {
     @Test
     fun tokenSetsMatchModelMappings() {
-        withResourceLines("/title.basics.tsv") { titleLines ->
-            withResourceLines("/name.basics.tsv") { nameLines ->
+        withResourceLines("/${ImdbDatasetManifestGenerator.TITLE_BASICS_TSV}") { titleLines ->
+            withResourceLines("/${ImdbDatasetManifestGenerator.NAME_BASICS_TSV}") { nameLines ->
                 val report = ImdbTsvTokenValidation.validate(titleLines, nameLines)
 
                 println("distinct titleType count=${report.titleTypes.size}")
