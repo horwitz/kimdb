@@ -36,14 +36,7 @@ java {
 }
 
 kotlin {
-    sourceSets {
-        named("main") {
-            kotlin.srcDirs("src/main/kotlin")
-        }
-        named("test") {
-            kotlin.srcDirs("src/test/kotlin")
-        }
-    }
+    jvmToolchain(21)
 }
 
 tasks.register<JavaExec>("generateDatasetManifest") {
@@ -71,14 +64,7 @@ tasks.register<JavaExec>("benchmarkBackends") {
 }
 
 sourceSets {
-    main {
-        java.srcDirs("src/main/kotlin")
-        resources.srcDirs("src/main/resources")
-    }
-
     test {
-        java.srcDirs("src/test/kotlin")
-        resources.srcDirs("src/test/resources")
         resources {
             srcDir(rootProject.layout.projectDirectory.dir("src/main/resources"))
         }
