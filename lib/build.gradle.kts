@@ -39,6 +39,7 @@ tasks.register<JavaExec>("generateDatasetManifest") {
     description = "Generate dataset-manifest.json for IMDb TSV/GZ files."
     classpath = sourceSets["main"].runtimeClasspath
     mainClass = "com.kimdb.tsv.GenerateDatasetManifestKt"
+    workingDir = rootProject.projectDir
 }
 
 sourceSets {
