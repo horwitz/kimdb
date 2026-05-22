@@ -17,9 +17,7 @@ class ImdbDatasetManifestTest {
         assertTrue("name.basics.tsv" in keys)
         assertTrue("name.basics.tsv.gz" in keys)
 
-        keys.forEach { key ->
-            val file = manifest.files.getValue(key)
-
+        manifest.files.forEach { (key, file) ->
             assertTrue(file.sizeBytes > 0L, "Expected positive size for $key")
             assertTrue(file.sha256.length == 64, "Expected SHA-256 hex for $key")
         }
