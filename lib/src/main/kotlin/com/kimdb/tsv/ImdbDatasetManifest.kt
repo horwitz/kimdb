@@ -37,7 +37,6 @@ object ImdbDatasetManifestGenerator {
     private val json =
         Json {
             prettyPrint = true
-            prettyPrintIndent = "  "
         }
 
     fun generate(
