@@ -7,6 +7,7 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.spotless)
     alias(libs.plugins.versions)
     `java-library`
@@ -18,6 +19,7 @@ repositories {
 
 dependencies {
     api(libs.slf4j.api)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.params)

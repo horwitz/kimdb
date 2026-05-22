@@ -5,10 +5,13 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.security.MessageDigest
 import java.time.Instant
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.io.path.bufferedReader
 import kotlin.io.path.exists
 import kotlin.io.path.fileSize
 
+@Serializable
 data class DatasetFileManifest(
     val fileName: String,
     val sourceUrl: String,
@@ -18,6 +21,7 @@ data class DatasetFileManifest(
     val header: String? = null,
 )
 
+@Serializable
 data class ImdbDatasetManifest(
     val createdAtUtc: String,
     val downloadedAtUtc: String?,
@@ -26,6 +30,11 @@ data class ImdbDatasetManifest(
 
 object ImdbDatasetManifestGenerator {
     private const val SOURCE_BASE_URL = "https://datasets.imdbws.com/"
+    private val json =
+        Json {
+            prettyPrint = true
+            prettyPrintIndent = "  "
+        }
 
     fun generate(
         resourcesDir: Path,
@@ -91,46 +100,7 @@ object ImdbDatasetManifestGenerator {
             sha256 = sha256(path),
         )
 
-    fun toJson(manifest: ImdbDatasetManifest): String {
-        val fileEntries =
-            manifest.files.entries.joinToString(",\n") { (key, value) ->
-                """    "${esc(key)}": ${toJson(value)}"""
-            }
-        return buildString {
-            appendLine("{")
-            appendLine("""  "createdAtUtc": "${esc(manifest.createdAtUtc)}",""")
-            if (manifest.downloadedAtUtc == null) {
-                appendLine("""  "downloadedAtUtc": null,""")
-            } else {
-                appendLine("""  "downloadedAtUtc": "${esc(manifest.downloadedAtUtc)}",""")
-            }
-            appendLine("""  "files": {""")
-            append(fileEntries)
-            appendLine()
-            appendLine("  }")
-            appendLine("}")
-        }
-    }
-
-    private fun toJson(file: DatasetFileManifest) =
-        buildString {
-            appendLine("{")
-            appendLine("""      "fileName": "${esc(file.fileName)}",""")
-            appendLine("""      "sourceUrl": "${esc(file.sourceUrl)}",""")
-            appendLine("""      "sizeBytes": ${file.sizeBytes},""")
-            appendLine("""      "sha256": "${esc(file.sha256)}",""")
-            if (file.rowCount == null) {
-                appendLine("""      "rowCount": null,""")
-            } else {
-                appendLine("""      "rowCount": ${file.rowCount},""")
-            }
-            if (file.header == null) {
-                appendLine("""      "header": null""")
-            } else {
-                appendLine("""      "header": "${esc(file.header)}"""")
-            }
-            append("    }")
-        }
+    fun toJson(manifest: ImdbDatasetManifest) = json.encodeToString(manifest)
 
     private fun sha256(path: Path): String {
         val digest = MessageDigest.getInstance("SHA-256")
@@ -145,12 +115,4 @@ object ImdbDatasetManifestGenerator {
 
         return digest.digest().joinToString("") { b -> "%02x".format(b) }
     }
-
-    private fun esc(s: String) =
-        s
-            .replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t")
 }

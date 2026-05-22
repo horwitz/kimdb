@@ -21,6 +21,11 @@ class ImdbDatasetManifestTest {
             assertTrue(file.sizeBytes > 0L, "Expected positive size for $key")
             assertTrue(file.sha256.length == 64, "Expected SHA-256 hex for $key")
         }
+
+        val json = ImdbDatasetManifestGenerator.toJson(manifest)
+
+        assertTrue(json.trimStart().startsWith("{"), "Expected JSON object")
+        assertTrue(json.contains("\"files\""), "Expected files field in manifest JSON")
     }
 
     private fun resolveResourcesDirFromClasspath(resourcePath: String): Path {
