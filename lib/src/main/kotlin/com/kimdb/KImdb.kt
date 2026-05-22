@@ -16,4 +16,8 @@ object KImdb {
         titleBasicsPath: Path,
         nameBasicsPath: Path
     ): KImdbRepository = ImdbTsvParser.loadRepository(titleBasicsPath, nameBasicsPath)
+
+    fun sqliteRepository(
+        dbPath: Path
+    ): KImdbRepository = SqliteKImdbRepository(dbPath)
 }
