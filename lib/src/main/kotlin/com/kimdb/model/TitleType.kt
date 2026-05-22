@@ -19,7 +19,6 @@ enum class TitleType(
     companion object {
         private val byImdbValue = entries.associateBy(TitleType::imdbValue)
 
-        fun of(imdbValue: String) =
-            byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown title type: $imdbValue")
+        fun of(imdbValue: String) = byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown title type: $imdbValue")
     }
 }

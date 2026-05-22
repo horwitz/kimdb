@@ -1,7 +1,7 @@
 package com.kimdb.tsv
 
-import com.kimdb.api.KImdbRepository
 import com.kimdb.KImdb
+import com.kimdb.api.KImdbRepository
 import com.kimdb.model.Genre
 import com.kimdb.model.IsAdult
 import com.kimdb.model.NConst

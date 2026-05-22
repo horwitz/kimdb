@@ -10,7 +10,6 @@ enum class IsAdult(
     companion object {
         private val byImdbValue = entries.associateBy(IsAdult::imdbValue)
 
-        fun of(imdbValue: String) =
-            byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown isAdult value: $imdbValue")
+        fun of(imdbValue: String) = byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown isAdult value: $imdbValue")
     }
 }

@@ -37,7 +37,6 @@ enum class Genre(
     companion object {
         private val byImdbValue = entries.associateBy(Genre::imdbValue)
 
-        fun of(imdbValue: String) =
-            byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown genre: $imdbValue")
+        fun of(imdbValue: String) = byImdbValue[imdbValue] ?: throw IllegalArgumentException("Unknown genre: $imdbValue")
     }
 }
