@@ -10,6 +10,7 @@ build
 # Ignore IntelliJ local project metadata
 .idea/
 *.iml
+identifier.sqlite
 
 # Ignore local IMDb dataset payloads (regenerated locally, not source-controlled)
 src/main/resources/title.basics.tsv
