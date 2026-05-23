@@ -7,10 +7,10 @@ Utilities and query APIs for IMDb `name.basics` and `title.basics` datasets (fro
 When new IMDb files are downloaded from `https://datasets.imdbws.com/`:
 
 1. Replace files in `src/main/resources/`:
-   - `title.basics.tsv`
-   - `title.basics.tsv.gz`
-   - `name.basics.tsv`
-   - `name.basics.tsv.gz`
+    - `title.basics.tsv`
+    - `title.basics.tsv.gz`
+    - `name.basics.tsv`
+    - `name.basics.tsv.gz`
 2. Regenerate manifest:
 
 ```bash
@@ -24,11 +24,13 @@ Optional flags:
 ```
 
 Where:
+
 - `-r` / `--resources-dir`: input directory for TSV/GZ files
 - `-o` / `--output`: output manifest path
 - `-t` / `--downloaded-at-utc`: optional original download timestamp (UTC, ISO-8601)
 
-The manifest includes file sizes and SHA-256 checksums for both TSV and GZ files, plus row-count/header metadata for TSV files.
+The manifest includes file sizes and SHA-256 checksums for both TSV and GZ files, plus row-count/header metadata for TSV
+files.
 
 ## SQLite Smoke Test
 
@@ -84,9 +86,9 @@ Command used:
 
 Observed output (`ns/op`):
 
-| operation | in_memory_ns | sqlite_ns | sqlite_over_in_memory_ratio |
-|---|---:|---:|---:|
-| getTitlesByPrimaryTitle | 505 | 1,020,340 | 2020.4752 |
-| getNamesByPrimaryName | 345 | 1,317,440 | 3818.6667 |
-| getTitle | 395 | 533,670 | 1351.0633 |
-| getTitlesByTypeAndLength | 625 | 175,162,965 | 280260.7440 |
+| operation                | in_memory_ns |   sqlite_ns | sqlite_over_in_memory_ratio |
+|--------------------------|-------------:|------------:|----------------------------:|
+| getTitlesByPrimaryTitle  |          505 |   1,020,340 |                   2020.4752 |
+| getNamesByPrimaryName    |          345 |   1,317,440 |                   3818.6667 |
+| getTitle                 |          395 |     533,670 |                   1351.0633 |
+| getTitlesByTypeAndLength |          625 | 175,162,965 |                 280260.7440 |
