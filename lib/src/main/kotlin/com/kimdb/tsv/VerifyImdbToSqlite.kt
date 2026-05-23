@@ -64,22 +64,20 @@ private fun countRows(
 private fun queryCount(
     connection: Connection,
     tableName: String
-): Long =
-    connection.createStatement().use { statement ->
-        statement.executeQuery("SELECT COUNT(*) AS c FROM $tableName").use { resultSet ->
-            check(resultSet.next()) { "COUNT query returned no rows for $tableName" }
-            resultSet.getLong("c")
-        }
+): Long = connection.createStatement().use { statement ->
+    statement.executeQuery("SELECT COUNT(*) AS c FROM $tableName").use { resultSet ->
+        check(resultSet.next()) { "COUNT query returned no rows for $tableName" }
+        resultSet.getLong("c")
     }
+}
 
 private fun hasIndex(
     connection: Connection,
     indexName: String
-): Boolean =
-    connection.prepareStatement("SELECT 1 FROM sqlite_master WHERE type='index' AND name=? LIMIT 1").use { ps ->
-        ps.setString(1, indexName)
-        ps.executeQuery().use { rs -> rs.next() }
-    }
+): Boolean = connection.prepareStatement("SELECT 1 FROM sqlite_master WHERE type='index' AND name=? LIMIT 1").use { ps ->
+    ps.setString(1, indexName)
+    ps.executeQuery().use { rs -> rs.next() }
+}
 
 fun main(args: Array<String>) {
     VerifyImdbToSqliteCommand().main(args)
