@@ -9,7 +9,7 @@ import com.kimdb.KImdb
 import com.kimdb.api.KImdbRepository
 import com.kimdb.model.TConst
 import com.kimdb.model.TitleType
-import com.kimdb.tsv.ImdbDatasetManifestGenerator
+import com.kimdb.tsv.resolveRequiredImdbInputs
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
@@ -71,16 +71,14 @@ private class BenchmarkBackendsCommand : CliktCommand(name = "benchmark-backends
         require(warmup >= 0) { "warmup must be >= 0" }
         require(repetitions > 0) { "repetitions must be > 0" }
 
-        val titleBasics = resourcesDir.resolve(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV)
-        val nameBasics = resourcesDir.resolve(ImdbDatasetManifestGenerator.NAME_BASICS_TSV)
-        require(Files.isRegularFile(titleBasics)) { "Missing TSV file: $titleBasics" }
-        require(Files.isRegularFile(nameBasics)) { "Missing TSV file: $nameBasics" }
-        require(Files.isRegularFile(sqlitePath)) {
-            "Missing SQLite DB file: $sqlitePath (run :lib:importImdbToSqlite first)"
-        }
+        val inputs = resolveRequiredImdbInputs(
+            resourcesDir = resourcesDir,
+            sqlitePath = sqlitePath,
+            sqliteMissingMessageSuffix = "(run :lib:importImdbToSqlite first)"
+        )
 
-        val inMemory = KImdb.inMemoryRepositoryFromTsv(titleBasics, nameBasics)
-        val sqlite = KImdb.sqliteRepository(sqlitePath)
+        val inMemory = KImdb.inMemoryRepositoryFromTsv(inputs.titleBasics, inputs.nameBasics)
+        val sqlite = KImdb.sqliteRepository(inputs.sqliteDb)
 
         val titleType = TitleType.of(sampleType)
         val tconst = TConst.of(sampleTconst)

@@ -5,7 +5,6 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.Connection
 import java.sql.DriverManager
@@ -20,16 +19,15 @@ private class VerifyImdbToSqliteCommand : CliktCommand(name = "verify-imdb-to-sq
         .default(Path.of("build/kimdb.db"))
 
     override fun run() {
-        val titlePath = resourcesDir.resolve(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV)
-        val namePath = resourcesDir.resolve(ImdbDatasetManifestGenerator.NAME_BASICS_TSV)
-        require(Files.isRegularFile(titlePath)) { "Missing TSV file: $titlePath" }
-        require(Files.isRegularFile(namePath)) { "Missing TSV file: $namePath" }
-        require(Files.isRegularFile(sqlitePath)) { "Missing SQLite DB file: $sqlitePath" }
+        val inputs = resolveRequiredImdbInputs(
+            resourcesDir = resourcesDir,
+            sqlitePath = sqlitePath
+        )
 
-        val expectedTitleCount = countRows(titlePath, expectedColumns = 9)
-        val expectedNameCount = countRows(namePath, expectedColumns = 6)
+        val expectedTitleCount = countRows(inputs.titleBasics, expectedColumns = 9)
+        val expectedNameCount = countRows(inputs.nameBasics, expectedColumns = 6)
 
-        val jdbcUrl = "jdbc:sqlite:${sqlitePath.toAbsolutePath()}"
+        val jdbcUrl = "jdbc:sqlite:${inputs.sqliteDb.toAbsolutePath()}"
         DriverManager.getConnection(jdbcUrl).use { connection ->
             val actualTitleCount = queryCount(connection, SqliteSchema.Tables.TITLES)
             val actualNameCount = queryCount(connection, SqliteSchema.Tables.NAMES)
@@ -46,7 +44,7 @@ private class VerifyImdbToSqliteCommand : CliktCommand(name = "verify-imdb-to-sq
             }
 
             echo(
-                "SQLite import verified: titles=$actualTitleCount names=$actualNameCount indexes=${SqliteSchema.requiredIndexes.size} db=$sqlitePath"
+                "SQLite import verified: titles=$actualTitleCount names=$actualNameCount indexes=${SqliteSchema.requiredIndexes.size} db=${inputs.sqliteDb}"
             )
         }
     }
