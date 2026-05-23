@@ -1,15 +1,15 @@
 package com.kimdb
 
-import com.kimdb.tsv.ImdbDatasetManifestGenerator
 import com.kimdb.tsv.ImdbTsvTokenValidation
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 class ImdbTsvTokenValidationTest {
     @Test
     fun tokenSetsMatchModelMappings() {
-        withResourceLines("/${ImdbDatasetManifestGenerator.TITLE_BASICS_TSV}") { titleLines ->
-            withResourceLines("/${ImdbDatasetManifestGenerator.NAME_BASICS_TSV}") { nameLines ->
+        withFileLines(TestImdbFixture.titleBasicsPath) { titleLines ->
+            withFileLines(TestImdbFixture.nameBasicsPath) { nameLines ->
                 val report = ImdbTsvTokenValidation.validate(titleLines, nameLines)
 
                 println("distinct titleType count=${report.titleTypes.size}")
@@ -30,14 +30,8 @@ class ImdbTsvTokenValidationTest {
         }
     }
 
-    private fun <T> withResourceLines(
-        resourcePath: String,
+    private fun <T> withFileLines(
+        path: Path,
         block: (Sequence<String>) -> T
-    ): T {
-        val stream =
-            this::class.java.getResourceAsStream(resourcePath)
-                ?: error("Missing classpath resource: $resourcePath")
-
-        return stream.bufferedReader().useLines { lines -> block(lines) }
-    }
+    ) = TestImdbFixture.withFileLines(path, block)
 }

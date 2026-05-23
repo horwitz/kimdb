@@ -79,14 +79,6 @@ tasks.register<JavaExec>("verifyBackendsParity") {
     workingDir = rootProject.projectDir
 }
 
-sourceSets {
-    test {
-        resources {
-            srcDir(rootProject.layout.projectDirectory.dir("src/main/resources"))
-        }
-    }
-}
-
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 

@@ -3,13 +3,11 @@ package com.kimdb
 import com.kimdb.tsv.ImdbDatasetManifestGenerator
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.nio.file.Path
 
 class ImdbDatasetManifestTest {
     @Test
     fun manifestIncludesTsvAndGzFilesWhenPresent() {
-        val resourcesDir = resolveResourcesDirFromClasspath("/${ImdbDatasetManifestGenerator.TITLE_BASICS_TSV}")
-        val manifest = ImdbDatasetManifestGenerator.generate(resourcesDir)
+        val manifest = ImdbDatasetManifestGenerator.generate(TestImdbFixture.resourcesDir)
         val keys = manifest.files.keys
 
         assertTrue(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV in keys)
@@ -26,13 +24,5 @@ class ImdbDatasetManifestTest {
 
         assertTrue(json.trimStart().startsWith("{"), "Expected JSON object")
         assertTrue(json.contains("\"files\""), "Expected files field in manifest JSON")
-    }
-
-    private fun resolveResourcesDirFromClasspath(resourcePath: String): Path {
-        val url =
-            this::class.java.getResource(resourcePath)
-                ?: error("Missing classpath resource: $resourcePath")
-
-        return Path.of(url.toURI()).parent
     }
 }
