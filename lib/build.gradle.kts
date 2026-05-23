@@ -71,6 +71,14 @@ tasks.register<JavaExec>("benchmarkBackends") {
     workingDir = rootProject.projectDir
 }
 
+tasks.register<JavaExec>("verifyBackendsParity") {
+    group = "verification"
+    description = "Verify selected query parity between in-memory and SQLite repositories."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.bench.VerifyBackendsParityKt"
+    workingDir = rootProject.projectDir
+}
+
 sourceSets {
     test {
         resources {
