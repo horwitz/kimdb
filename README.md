@@ -73,3 +73,20 @@ CSV output written to a file:
 ```bash
 ./gradlew :lib:benchmarkBackends --args="-f csv -o build/benchmarks/backend-benchmark.csv"
 ```
+
+### Baseline (2026-05-22)
+
+Command used:
+
+```bash
+./gradlew :lib:benchmarkBackends --args="-f csv -o build/benchmarks/backend-benchmark.csv -w 5 -n 20"
+```
+
+Observed output (`ns/op`):
+
+| operation | in_memory_ns | sqlite_ns | sqlite_over_in_memory_ratio |
+|---|---:|---:|---:|
+| getTitlesByPrimaryTitle | 505 | 1,020,340 | 2020.4752 |
+| getNamesByPrimaryName | 345 | 1,317,440 | 3818.6667 |
+| getTitle | 395 | 533,670 | 1351.0633 |
+| getTitlesByTypeAndLength | 625 | 175,162,965 | 280260.7440 |
