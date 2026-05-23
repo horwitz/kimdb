@@ -15,6 +15,7 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 import java.time.Year
 
+// TODO consider Exposed/jOOQ (vs. raw JDBC); if schema migrations are needed, also evaluate Flyway/Liquibase
 class SqliteKImdbRepository(
     dbPath: Path
 ) : KImdbRepository {
