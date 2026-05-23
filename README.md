@@ -119,7 +119,7 @@ CSV output written to a file:
 ./gradlew :lib:benchmarkBackends --args="-f csv -o build/benchmarks/backend-benchmark.csv"
 ```
 
-### Baseline (2026-05-22)
+### Baseline (2026-05-23)
 
 Command used:
 
@@ -131,7 +131,7 @@ Observed output (`ns/op`):
 
 | operation                | in_memory_ns |   sqlite_ns | sqlite_over_in_memory_ratio |
 |--------------------------|-------------:|------------:|----------------------------:|
-| getTitlesByPrimaryTitle  |          505 |   1,020,340 |                   2020.4752 |
-| getNamesByPrimaryName    |          345 |   1,317,440 |                   3818.6667 |
-| getTitle                 |          395 |     533,670 |                   1351.0633 |
-| getTitlesByTypeAndLength |          625 | 175,162,965 |                 280260.7440 |
+| getTitlesByPrimaryTitle  |          565 |   1,493,900 |                   2644.0708 |
+| getNamesByPrimaryName    |          380 |   1,516,920 |                   3991.8947 |
+| getTitle                 |          910 |     586,025 |                    643.9835 |
+| getTitlesByTypeAndLength |          535 | 195,120,565 |                 364711.3364 |
