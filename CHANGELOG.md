@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0] - 2026-05-23
+
+### Added
+- `InputStream`-based loading support for in-memory repository construction:
+  - `KImdb.inMemoryRepositoryFromTsv(InputStream, InputStream)`
+  - `ImdbTsvParser.loadRepository(InputStream, InputStream)`
+  - `ImdbTsvParser.parseTitleBasics(InputStream)`
+  - `ImdbTsvParser.parseNameBasics(InputStream)`
+
 ## [0.1.0] - 2026-05-23
 
 ### Added

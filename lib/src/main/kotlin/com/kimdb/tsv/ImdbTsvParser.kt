@@ -9,6 +9,7 @@ import com.kimdb.model.Name
 import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
+import java.io.InputStream
 import java.nio.file.Path
 import java.time.Year
 
@@ -21,9 +22,21 @@ object ImdbTsvParser {
         names = parseNameBasics(nameBasicsPath)
     )
 
+    fun loadRepository(
+        titleBasicsStream: InputStream,
+        nameBasicsStream: InputStream
+    ): KImdbRepository = KImdb.inMemoryRepository(
+        titles = parseTitleBasics(titleBasicsStream),
+        names = parseNameBasics(nameBasicsStream)
+    )
+
     fun parseTitleBasics(path: Path) = mapTsvRows(path, expectedColumns = 9, rowMapper = ::parseTitleRow)
 
+    fun parseTitleBasics(inputStream: InputStream) = mapTsvRows(inputStream, expectedColumns = 9, rowMapper = ::parseTitleRow)
+
     fun parseNameBasics(path: Path) = mapTsvRows(path, expectedColumns = 6, rowMapper = ::parseNameRow)
+
+    fun parseNameBasics(inputStream: InputStream) = mapTsvRows(inputStream, expectedColumns = 6, rowMapper = ::parseNameRow)
 
     private fun parseTitleRow(cols: List<String>) = Title(
         tconst = TConst.of(cols[0]),

@@ -1,5 +1,6 @@
 package com.kimdb.tsv
 
+import java.io.InputStream
 import java.nio.file.Path
 import kotlin.io.path.useLines
 
@@ -34,9 +35,21 @@ internal fun <T> mapTsvRows(
     path: Path,
     expectedColumns: Int,
     rowMapper: (List<String>) -> T
+) = path.useLines { lines -> mapTsvRows(lines, expectedColumns, rowMapper) }
+
+internal fun <T> mapTsvRows(
+    inputStream: InputStream,
+    expectedColumns: Int,
+    rowMapper: (List<String>) -> T
+) = inputStream.bufferedReader().useLines { lines -> mapTsvRows(lines, expectedColumns, rowMapper) }
+
+private fun <T> mapTsvRows(
+    lines: Sequence<String>,
+    expectedColumns: Int,
+    rowMapper: (List<String>) -> T
 ): List<T> {
     val out = mutableListOf<T>()
-    forEachTsvRow(path, expectedColumns) { out += rowMapper(it) }
+    forEachTsvRow(lines, expectedColumns) { out += rowMapper(it) }
     return out
 }
 
