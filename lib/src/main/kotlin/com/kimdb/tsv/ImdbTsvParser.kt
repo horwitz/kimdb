@@ -10,6 +10,7 @@ import com.kimdb.model.TConst
 import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 import java.nio.file.Path
+import java.time.Year
 
 object ImdbTsvParser {
     fun loadRepository(
@@ -30,8 +31,8 @@ object ImdbTsvParser {
         primaryTitle = cols[2],
         originalTitle = cols[3],
         isAdult = IsAdult.of(cols[4]),
-        startYear = cols[5].toIntOrNullToken(),
-        endYear = cols[6].toIntOrNullToken(),
+        startYear = cols[5].toYearOrNullToken(),
+        endYear = cols[6].toYearOrNullToken(),
         runTimeMinutes = cols[7].toLongOrNullToken(),
         genres = cols[8].toGenresOrEmpty()
     )
@@ -39,13 +40,13 @@ object ImdbTsvParser {
     private fun parseNameRow(cols: List<String>) = Name(
         nconst = NConst.of(cols[0]),
         primaryName = cols[1],
-        birthYear = cols[2].toIntOrNullToken(),
-        deathYear = cols[3].toIntOrNullToken(),
+        birthYear = cols[2].toYearOrNullToken(),
+        deathYear = cols[3].toYearOrNullToken(),
         primaryProfession = cols[4].toStringSetOrEmpty(),
         knownForTitles = cols[5].toTconstSetOrEmpty()
     )
 
-    private fun String.toIntOrNullToken() = if (this == NULL_TOKEN) null else toInt()
+    private fun String.toYearOrNullToken() = if (this == NULL_TOKEN) null else Year.of(toInt())
 
     private fun String.toLongOrNullToken() = if (this == NULL_TOKEN) null else toLong()
 

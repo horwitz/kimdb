@@ -13,6 +13,7 @@ import java.nio.file.Path
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
+import java.time.Year
 
 class SqliteKImdbRepository(
     dbPath: Path
@@ -142,8 +143,8 @@ class SqliteKImdbRepository(
         primaryTitle = getString(c.PRIMARY_TITLE),
         originalTitle = getString(c.ORIGINAL_TITLE),
         isAdult = IsAdult.of(getString(c.IS_ADULT)),
-        startYear = getNullableInt(c.START_YEAR),
-        endYear = getNullableInt(c.END_YEAR),
+        startYear = getNullableYear(c.START_YEAR),
+        endYear = getNullableYear(c.END_YEAR),
         runTimeMinutes = getNullableLong(c.RUN_TIME_MINUTES),
         genres = getNullableString(c.GENRES).toCsvSet(Genre::of)
     )
@@ -151,15 +152,15 @@ class SqliteKImdbRepository(
     private fun ResultSet.toName() = Name(
         nconst = NConst.of(getString(c.NCONST)),
         primaryName = getString(c.PRIMARY_NAME),
-        birthYear = getNullableInt(c.BIRTH_YEAR),
-        deathYear = getNullableInt(c.DEATH_YEAR),
+        birthYear = getNullableYear(c.BIRTH_YEAR),
+        deathYear = getNullableYear(c.DEATH_YEAR),
         primaryProfession = getNullableString(c.PRIMARY_PROFESSION).toCsvSet { it },
         knownForTitles = getNullableString(c.KNOWN_FOR_TITLES).toCsvSet(TConst::of)
     )
 
-    private fun ResultSet.getNullableInt(column: String): Int? {
+    private fun ResultSet.getNullableYear(column: String): Year? {
         val value = getInt(column)
-        return if (wasNull()) null else value
+        return if (wasNull()) null else Year.of(value)
     }
 
     private fun ResultSet.getNullableLong(column: String): Long? {

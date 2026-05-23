@@ -9,6 +9,7 @@ import com.kimdb.model.TitleType
 import com.kimdb.tsv.ImdbDatasetManifestGenerator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.Year
 
 class SimpleTests {
     @Test
@@ -20,7 +21,7 @@ class SimpleTests {
                 primaryTitle = "Airplane!",
                 originalTitle = "Airplane!",
                 isAdult = IsAdult.NOT_ADULT,
-                startYear = 1980,
+                startYear = Year.of(1980),
                 endYear = null,
                 runTimeMinutes = 88L,
                 genres = setOf(Genre.COMEDY)

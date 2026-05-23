@@ -5,6 +5,7 @@ import com.kimdb.model.TConst
 import com.kimdb.model.TitleType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.Year
 
 class WhoAmI107Test {
     @Test
@@ -53,7 +54,7 @@ class WhoAmI107Test {
                 TestImdbFixture.repository.getTitles().singleOrNull { title ->
                     title.primaryTitle.uppercase() == "THIRD PERSON" &&
                         title.titleType == TitleType.MOVIE &&
-                        title.startYear == 2013
+                        title.startYear == Year.of(2013)
                 }
             )
 
@@ -71,7 +72,7 @@ class WhoAmI107Test {
         firstNameUppercase: String,
         professionLowercase: String
     ): Map<TConst, List<com.kimdb.model.Name>> {
-        val year = 2013
+        val year = Year.of(2013)
 
         return TestImdbFixture.repository.getNames()
             .asSequence()
