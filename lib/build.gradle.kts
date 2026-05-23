@@ -11,7 +11,10 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.versions)
     `java-library`
+    `maven-publish`
 }
+
+group = "com.kimdb"
 
 repositories {
     mavenCentral()
@@ -89,6 +92,17 @@ tasks.withType<Test>().configureEach {
     forkEvery = 12
     minHeapSize = "1g"
     maxHeapSize = "16g"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = project.group.toString()
+            artifactId = "kimdb"
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
 }
 
 spotless {
