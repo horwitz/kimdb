@@ -6,3 +6,13 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Ignore IntelliJ local project metadata
+.idea/
+*.iml
+
+# Ignore local IMDb dataset payloads (regenerated locally, not source-controlled)
+src/main/resources/title.basics.tsv
+src/main/resources/title.basics.tsv.gz
+src/main/resources/name.basics.tsv
+src/main/resources/name.basics.tsv.gz
