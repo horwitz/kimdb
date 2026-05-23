@@ -2,7 +2,7 @@
 
 Utilities and query APIs for IMDb `name.basics` and `title.basics` datasets (from `https://datasets.imdbws.com/`).
 
-## Refreshing Dataset Files
+## Updating Dataset Files
 
 When new IMDb files are downloaded from `https://datasets.imdbws.com/`:
 
@@ -31,6 +31,37 @@ Where:
 
 The manifest includes file sizes and SHA-256 checksums for both TSV and GZ files, plus row-count/header metadata for TSV
 files.
+
+### Checklist for Updating
+
+1. Replace all four files together in `src/main/resources`:
+    - `title.basics.tsv`
+    - `title.basics.tsv.gz`
+    - `name.basics.tsv`
+    - `name.basics.tsv.gz`
+2. Regenerate `dataset-manifest.json`:
+
+```bash
+./gradlew :lib:generateDatasetManifest
+```
+
+3. Rebuild SQLite from the same TSV snapshot:
+
+```bash
+./gradlew :lib:importImdbToSqlite
+```
+
+4. Verify row-count and index integrity:
+
+```bash
+./gradlew :lib:verifyImdbToSqlite
+```
+
+5. Run tests against the updated snapshot:
+
+```bash
+./gradlew :lib:test
+```
 
 ## SQLite Smoke Test
 
