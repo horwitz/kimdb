@@ -11,5 +11,5 @@ value class NConst private constructor(
         }
     }
 
-    override fun toString(): String = value
+    override fun toString() = value
 }

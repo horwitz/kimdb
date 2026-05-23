@@ -96,7 +96,7 @@ object ImdbDatasetManifestGenerator {
     private fun binaryFileManifest(
         path: Path,
         fileName: String
-    ): DatasetFileManifest = DatasetFileManifest(
+    ) = DatasetFileManifest(
         fileName = fileName,
         sourceUrl = SOURCE_BASE_URL + fileName,
         sizeBytes = path.fileSize(),

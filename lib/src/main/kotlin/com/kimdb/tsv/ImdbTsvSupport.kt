@@ -40,7 +40,7 @@ internal fun <T> mapTsvRows(
     return out
 }
 
-internal fun String.toCsvTokensOrEmpty(): List<String> = if (this == NULL_TOKEN) {
+internal fun String.toCsvTokensOrEmpty() = if (this == NULL_TOKEN) {
     emptyList()
 } else {
     split(',').filter(String::isNotBlank)
