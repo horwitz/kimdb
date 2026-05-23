@@ -89,6 +89,18 @@ With explicit paths:
 ./gradlew :lib:verifyImdbToSqlite --args="-r src/main/resources -d build/kimdb.db"
 ```
 
+Verify in-memory vs SQLite backend parity for key queries:
+
+```bash
+./gradlew :lib:verifyBackendsParity
+```
+
+With explicit paths:
+
+```bash
+./gradlew :lib:verifyBackendsParity --args="-r src/main/resources -d build/kimdb.db"
+```
+
 Run backend smoke test/benchmark (in-memory vs SQLite):
 
 ```bash
