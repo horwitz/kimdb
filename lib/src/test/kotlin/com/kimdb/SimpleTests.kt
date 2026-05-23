@@ -8,6 +8,7 @@ import com.kimdb.model.Title
 import com.kimdb.model.TitleType
 import com.kimdb.tsv.ImdbDatasetManifestGenerator
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.Year
 
@@ -69,5 +70,12 @@ class SimpleTests {
                 .toSet()
 
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun getTitlesByTypeAndLengthReturnsOnlyMatchingRows() {
+        val results = TestImdbFixture.repository.getTitlesByTypeAndLength(TitleType.MOVIE, 10)
+        assertTrue(results.isNotEmpty())
+        assertTrue(results.all { it.titleType == TitleType.MOVIE && it.primaryTitle.length == 10 })
     }
 }
