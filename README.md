@@ -135,3 +135,74 @@ Observed output (`ns/op`):
 | getNamesByPrimaryName    |          380 |   1,516,920 |                   3991.8947 |
 | getTitle                 |          910 |     586,025 |                    643.9835 |
 | getTitlesByTypeAndLength |          535 | 195,120,565 |                 364711.3364 |
+
+## Using via SQLite
+
+Consumers use SQLite support in three steps:
+
+1. Build a SQLite DB from IMDb TSV files (once per dataset snapshot).
+2. Point kimdb at that DB with `KImdb.sqliteRepository(Path)`.
+3. Query via `KImdbRepository`.
+
+Example:
+
+```kotlin
+import com.kimdb.KImdb
+import com.kimdb.model.TConst
+import java.nio.file.Path
+
+val repo = KImdb.sqliteRepository(Path.of("path/to/kimdb.db"))
+val title = repo.getTitle(TConst.of("tt0080339"))
+println(title?.primaryTitle)
+```
+
+### From Published Artifact (No kimdb Repo Clone)
+
+The Gradle tasks shown above (`:lib:importImdbToSqlite`, `:lib:verifyImdbToSqlite`, etc.) exist only in the kimdb repo.
+If you are using kimdb as a dependency, prefer adding `JavaExec` tasks in your own build so Gradle provides the full
+runtime classpath automatically:
+
+```kotlin
+tasks.register<JavaExec>("importImdbToSqlite") {
+    group = "application"
+    description = "Import IMDb TSV data into SQLite database."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.tsv.ImportImdbToSqliteKt"
+    args("-r", "src/main/resources", "-d", "build/kimdb/kimdb.db")
+}
+
+tasks.register<JavaExec>("verifyImdbToSqlite") {
+    group = "verification"
+    description = "Verify SQLite row counts and indexes against IMDb TSV files."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.tsv.VerifyImdbToSqliteKt"
+    args("-r", "src/main/resources", "-d", "build/kimdb/kimdb.db")
+}
+
+tasks.register<JavaExec>("verifyBackendsParity") {
+    group = "verification"
+    description = "Compare key query results between in-memory and SQLite repositories."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "com.kimdb.bench.VerifyBackendsParityKt"
+    args("-r", "src/main/resources", "-d", "build/kimdb/kimdb.db")
+}
+```
+
+Then run:
+
+```bash
+./gradlew importImdbToSqlite
+./gradlew verifyImdbToSqlite
+./gradlew verifyBackendsParity
+```
+
+If prefer to run directly with `java -cp`, include your full app runtime classpath (kimdb plus transitive dependencies):
+
+```bash
+java -cp "<your_app_classpath_with_kimdb_and_deps>" com.kimdb.tsv.ImportImdbToSqliteKt -r /path/to/resources -d /path/to/kimdb.db
+java -cp "<your_app_classpath_with_kimdb_and_deps>" com.kimdb.tsv.VerifyImdbToSqliteKt -r /path/to/resources -d /path/to/kimdb.db
+java -cp "<your_app_classpath_with_kimdb_and_deps>" com.kimdb.bench.VerifyBackendsParityKt -r /path/to/resources -d /path/to/kimdb.db
+```
+
+The published artifact does not include TSV payloads or a prebuilt SQLite DB, so consumers must provide TSV files and DB
+path explicitly. Use a generated location like `build/kimdb/kimdb.db` for the database, not `src/main/resources`.
