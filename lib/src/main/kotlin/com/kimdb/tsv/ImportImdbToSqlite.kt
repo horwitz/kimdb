@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.Connection
 import java.sql.DriverManager
@@ -27,6 +28,7 @@ private class ImportImdbToSqliteCommand : CliktCommand(name = "import-imdb-to-sq
     override fun run() {
         val titlePath = resourcesDir.resolve(ImdbDatasetManifestGenerator.TITLE_BASICS_TSV)
         val namePath = resourcesDir.resolve(ImdbDatasetManifestGenerator.NAME_BASICS_TSV)
+        sqlitePath.parent?.let { Files.createDirectories(it) }
         val jdbcUrl = "jdbc:sqlite:${sqlitePath.toAbsolutePath()}"
 
         DriverManager.getConnection(jdbcUrl).use { connection ->
