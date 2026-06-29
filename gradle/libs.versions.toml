@@ -2,7 +2,7 @@
 # https://docs.gradle.org/current/userguide/version_catalogs.html#sec::toml-dependencies-format
 
 [versions]
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 junit-jupiter = "6.1.1"
 spotless = "8.7.0"
 versions-plugin = "0.54.0"
